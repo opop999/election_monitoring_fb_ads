@@ -1,9 +1,8 @@
 [![Extraction of FB ads with Docker Image](https://github.com/opop999/election_monitoring_fb_ads/actions/workflows/docker.yml/badge.svg?branch=master)](https://github.com/opop999/election_monitoring_fb_ads/actions/workflows/docker.yml)
 
-## This repository is part of a umbrella project of the 2021 pre-election monitoring by the Czech chapter of Transparency International.
+## This repository is part of a [umbrella project](https://github.com/opop999?tab=projects) of the 2021 pre-election monitoring by the Czech chapter of Transparency International.
 
-# FB political advertisement extraction and analysis
-## Czech parliamentary elections 2021
+## Repository Focus: FB political advertisement extraction and analysis (Czech parliamentary elections 2021)
 
 ### Goal: To have an automated workflow, which would inform analysts covering the political communication and financing of the Czech 2021 parliamentary elections. This would ideally include:
 -Extraction of the raw tables with FB ads, regional and demographic data. To this end, we use the FB Ads API access through a Radlibrary wrapper.

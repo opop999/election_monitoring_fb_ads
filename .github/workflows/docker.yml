@@ -22,6 +22,8 @@ jobs:
       env:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
       run: Rscript fb_ads_extraction_10_plus.R
+    - name: Create summary tables 
+      run: Rscript fb_ads_summary_tables.R
       
  # Add new files in specified folder, commit along with other modified files, push
     - name: Commit files

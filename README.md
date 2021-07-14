@@ -4,7 +4,7 @@
 
 # This repository is part of a [umbrella project](https://github.com/opop999?tab=projects) of the 2021 pre-election monitoring by the Czech chapter of Transparency International.
 
-## Goal: Facebook and Instagram political advertisement extraction and analysis
+## Goal: Facebook & Instagram political advertisement extraction and analysis
 
 ### We aim to create an automated workflow, which would inform analysts covering the political communication and financing of the Czech 2021 parliamentary elections. This would ideally include:
 -Extraction of the raw tables with FB ads, regional and demographic data. To this end, we use the FB Ads API access through a Radlibrary wrapper. In the automatization part, we use GitHub Actions which run using a [Docker container](https://hub.docker.com/u/rocker) to provide better compatibility and robustness.

@@ -5,7 +5,7 @@
 ## Repository Focus: FB political advertisement extraction and analysis
 
 ### Goal: To have an automated workflow, which would inform analysts covering the political communication and financing of the Czech 2021 parliamentary elections. This would ideally include:
--Extraction of the raw tables with FB ads, regional and demographic data. To this end, we use the FB Ads API access through a Radlibrary wrapper.
+-Extraction of the raw tables with FB ads, regional and demographic data. To this end, we use the FB Ads API access through a Radlibrary wrapper. In the automatization part, we use GitHub Actions which run using a [Docker container](https://hub.docker.com/u/rocker) to provide better compatibility and robustness.
 
 -Transformation of the data to merge the three separate raw tables on the Ad ID.
 

@@ -60,12 +60,10 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   
   # We save each of these tables to a csv and rds file
   myfile_csv <- paste0(directory, "/", fields_vector[i], ".csv")
-  myfile_rds <- paste0(directory, "/", fields_vector[i], ".rds")
   mydataset <- get(paste0("dataset_", table_type_vector[i]))
   
   write_excel_csv(x = mydataset, file = myfile_csv)
-  saveRDS(object = mydataset, file = myfile_rds, compress = FALSE) 
-  
+
   }
   
   # C. MERGE PART OF THE FUNCTION

@@ -16,6 +16,8 @@ library(Radlibrary)
 
 # PART 2: DEFINE THE FUNCTION THAT WILL EXTRACT, MERGE AND SAVE FB ADS DATASETS
 
+############################### FUNCTION BEGGINING #############################
+
 get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
  
   # A. SPECIFICATION PART OF THE FUNCTION
@@ -42,9 +44,11 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # The inner we need a for loop to get us the 3 distinct types of tables from the FB Ads.
   
  for (p in 1:length(parties_ids)) {
+   print(paste("outer_loop", p))
    
   for (i in 1:length(fields_vector)) {
     
+    print(paste("inner_loop", i))
     # Building the query
     query <- adlib_build_query(ad_reached_countries = "CZ", 
                                ad_active_status = "ALL", 
@@ -64,6 +68,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
            as_tibble(response,
                      type = table_type_vector[i],
                      censor_access_token = TRUE))
+
   }
    # With each iteration of the outer for loop, we append the dataset
    new_rows <- get(paste0("dataset_ad_", print(p)))
@@ -74,7 +79,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
    
    new_rows <- get(paste0("dataset_region_", print(p)))
    dataset_region <- bind_rows(dataset_region, new_rows)
-
+  
  }
 
   # C. MERGE PART OF THE FUNCTION
@@ -110,11 +115,8 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # We turn off compression for rds files (optional). Their size is larger, but
   # the advantage are a magnitude faster read/write times using R.
   myfile_ad_csv <- paste0(directory, "/ad_data.csv")
-  myfile_ad_rds <- paste0(directory, "/ad_data.rds")
   myfile_demo_csv <- paste0(directory, "/demographic_data.csv")
-  myfile_demo_rds <- paste0(directory, "/demographic_data.rds")
   myfile_region_csv <- paste0(directory, "/region_data.csv")
-  myfile_region_rds <- paste0(directory, "/region_data.rds")
   myfile_merged_csv <- paste0(directory, "/merged_data.csv")
   myfile_merged_rds <- paste0(directory, "/merged_data.rds")
   
@@ -123,12 +125,12 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   write_excel_csv(x = dataset_region, file = myfile_region_csv)  
   write_excel_csv(x = merged_dataset, file = myfile_merged_csv) 
   
-  saveRDS(object = dataset_ad, file = myfile_ad_rds, compress = FALSE)  
-  saveRDS(object = dataset_demographic, file = myfile_demo_rds, compress = FALSE) 
-  saveRDS(object = dataset_region, file = myfile_region_rds, compress = FALSE) 
   saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE) 
   
 }
+
+############################### FUNCTION END ###################################
+
 
 # PART 3: SPECIFY THE ARGUMENTS NEEDED TO RUN THE FUNCTION
 

@@ -42,6 +42,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
                                  ad_delivery_date_max = max_date,
                                  ad_delivery_date_min = "2021-01-01",
                                  ad_type = "POLITICAL_AND_ISSUE_ADS",
+                                 publisher_platform = c("FACEBOOK", "INSTAGRAM"),
                                  limit = 1000, 
                                  search_page_ids = parties_ids,
                                  fields = fields_vector[i])  

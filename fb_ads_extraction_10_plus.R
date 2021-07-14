@@ -51,6 +51,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
                                ad_delivery_date_max = max_date,
                                ad_delivery_date_min = "2021-01-01",
                                ad_type = "POLITICAL_AND_ISSUE_ADS",
+                               publisher_platform = c("FACEBOOK", "INSTAGRAM"),
                                limit = 1000, 
                                search_page_ids = parties_ids[[p]],
                                fields = fields_vector[i])  
@@ -142,9 +143,10 @@ today <- format((Sys.Date()), "%Y-%m-%d")
 # The numeric ids are not easy to find for many pages and FB does not provide an easy way.
 # However, we can find numeric ids from the already queried table if we search
 # using the search_terms argument of the adlib_build_query function from Radlibrary.
+# To make this script more legible, ids are specified in a separate script file
+# named "monitored_pages_list.R" which also saves rds file that is loaded below.
 
-parties <- list(c("302134090396266"),
-                c("179497582061065"))
+parties <- readRDS("monitored_pages_list.rds")
 
 # Specify the desired output folder
 dir_name <- "data" 

@@ -4,6 +4,9 @@
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
 # We have to install the Radlibrary package, which is available only on GitHub
+# To install Radlibrary, we need to use install_github function from a lightweight
+# remotes package. We also specify argument "upgrade" to never, so we do not get
+# a dialog window asking us whether to update when the script runs automatically.
 library(dplyr)
 library(readr)
 library(tidyr)
@@ -53,11 +56,14 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
                    censor_access_token = TRUE))
   
   print(i)
-  # We save each of these tables to a csv file
   
-  myfile <- paste0(directory, "/", fields_vector[i], ".csv")
+  # We save each of these tables to a csv and rds file
+  myfile_csv <- paste0(directory, "/", fields_vector[i], ".csv")
+  myfile_rds <- paste0(directory, "/", fields_vector[i], ".rds")
   mydataset <- get(paste0("dataset_", table_type_vector[i]))
-  write_excel_csv(x = mydataset, file = myfile)
+  
+  write_excel_csv(x = mydataset, file = myfile_csv)
+  saveRDS(object = mydataset, file = myfile_rds, compress = FALSE) 
   
   }
   
@@ -92,7 +98,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # Rds will enable faster reading when using the dataset for further analyses
   myfile_merged_csv <- paste0(directory, "/merged_data.csv")
   myfile_merged_rds <- paste0(directory, "/merged_data.rds")
-  saveRDS(object = merged_dataset, file = myfile_merged_rds) 
+  saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE) 
   write_excel_csv(x = merged_dataset, file = myfile_merged_csv) 
 }
 

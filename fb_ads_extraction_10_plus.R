@@ -4,6 +4,9 @@
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
 # We have to install the Radlibrary package, which is available only on GitHub
+# To install Radlibrary, we need to use install_github function from a lightweight
+# remotes package. We also specify argument "upgrade" to never, so we do not get
+# a dialog window asking us whether to update when the script runs automatically.
 library(dplyr)
 library(readr)
 library(tidyr)
@@ -100,21 +103,30 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
                     "page_id"), factor)) %>% 
     arrange(desc(ad_creation_time))
   
-  # We save each of the three tables in a memory to a dedicated csv file
-  myfile_ad <- paste0(directory, "/ad_data.csv")
-  myfile_demo <- paste0(directory, "/demographic_data.csv")
-  myfile_region <- paste0(directory, "/region_data.csv")
+  # We save each of the three tables in a memory to a dedicated csv and rds file
+  # We save the merged dataset as well, both in the csv and rds formats
+  # Rds enables faster reading when using the dataset in R for further analyses
+  # We turn off compression for rds files (optional). Their size is larger, but
+  # the advantage are a magnitude faster read/write times using R.
+  myfile_ad_csv <- paste0(directory, "/ad_data.csv")
+  myfile_ad_rds <- paste0(directory, "/ad_data.rds")
+  myfile_demo_csv <- paste0(directory, "/demographic_data.csv")
+  myfile_demo_rds <- paste0(directory, "/demographic_data.rds")
+  myfile_region_csv <- paste0(directory, "/region_data.csv")
+  myfile_region_rds <- paste0(directory, "/region_data.rds")
+  myfile_merged_csv <- paste0(directory, "/merged_data.csv")
+  myfile_merged_rds <- paste0(directory, "/merged_data.rds")
   
-  write_excel_csv(x = dataset_ad, file = myfile_ad)
-  write_excel_csv(x = dataset_demographic, file = myfile_demo)
-  write_excel_csv(x = dataset_region, file = myfile_region)  
+  write_excel_csv(x = dataset_ad, file = myfile_ad_csv)
+  write_excel_csv(x = dataset_demographic, file = myfile_demo_csv)
+  write_excel_csv(x = dataset_region, file = myfile_region_csv)  
+  write_excel_csv(x = merged_dataset, file = myfile_merged_csv) 
   
-  # Finally, we save the merged dataset as well, both in the csv and rds formats
-  # Rds will enable faster reading when using the dataset for further analyses
-    myfile_merged_csv <- paste0(directory, "/merged_data.csv")
-    myfile_merged_rds <- paste0(directory, "/merged_data.rds")
-    saveRDS(object = merged_dataset, file = myfile_merged_rds) 
-    write_excel_csv(x = merged_dataset, file = myfile_merged_csv) 
+  saveRDS(object = dataset_ad, file = myfile_ad_rds, compress = FALSE)  
+  saveRDS(object = dataset_demographic, file = myfile_demo_rds, compress = FALSE) 
+  saveRDS(object = dataset_region, file = myfile_region_rds, compress = FALSE) 
+  saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE) 
+  
 }
 
 # PART 3: SPECIFY THE ARGUMENTS NEEDED TO RUN THE FUNCTION

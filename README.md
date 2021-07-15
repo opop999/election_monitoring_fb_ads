@@ -22,7 +22,7 @@
 
 -These scripts are operational within GitHub Actions workflow and run automatically once daily according to a cron trigger.
 
-|                                       |                                                           |                     |    
+|                                       |                                                           |                     |                         |
 |---------------------------------------|-----------------------------------------------------------|---------------------|-------------------------|
 | **Political Subject**                 | **Url**                                                   | **Numeric page id** | **Can we extract?**     |
 | ODS                                   | <https://www.facebook.com/ods.cz/>                        | 30575632699         | TRUE                    |

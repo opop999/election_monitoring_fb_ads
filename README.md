@@ -24,7 +24,7 @@
 
 ### Target political subjects (incomplete list - work in progress)
 
-| **POLITICAL SUBJECT**                 | **URL**                                                   | **NUMERIC ID**      |  **EXTRACTABLE?**       |
+| **POLITICAL SUBJECT**                 | **URL**                                                   | **NUMERIC ID**      |  **WORKS?**             |
 | :---                                  | :---                                                      | :---                | :---                    |
 | ODS                                   | <https://www.facebook.com/ods.cz/>                        | 30575632699         | TRUE                    |
 | Zelení                                | <https://www.facebook.com/stranazelenych/>                | 39371299263         | TRUE                    |

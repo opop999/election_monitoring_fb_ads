@@ -26,8 +26,6 @@
 
 | **POLITICAL SUBJECT**                 | **URL**                                                   | **NUMERIC ID**      |  **EXTRACTABLE?**       |
 | :---                                  | :---                                                      | :---                | :---                    |
-|---------------------------------------|-----------------------------------------------------------|---------------------|-------------------------|
-| **POLITICAL SUBJECT**                 | **URL**                                                   | **NUMERIC ID**      | **EXTRACTABLE?**        |
 | ODS                                   | <https://www.facebook.com/ods.cz/>                        | 30575632699         | TRUE                    |
 | Zelení                                | <https://www.facebook.com/stranazelenych/>                | 39371299263         | TRUE                    |
 | TOP 09                                | <https://www.facebook.com/top09cz/>                       | 90002267161         | TRUE                    |

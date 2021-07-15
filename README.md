@@ -23,29 +23,22 @@
 -These scripts are operational within GitHub Actions workflow and run automatically once daily according to a cron trigger.
 
 
-|                                       |                                                           |                     |                         |
 |---------------------------------------|-----------------------------------------------------------|---------------------|-------------------------|
-| **political_subject**                 | **url**                                                   | **numeric_page_id** | **added_to_extraction** |
+| **Political Subject**                 | **Url**                                                   | **Numeric page id** | **Can we extract?**     |
 | ODS                                   | <https://www.facebook.com/ods.cz/>                        | 30575632699         | TRUE                    |
 | Zelení                                | <https://www.facebook.com/stranazelenych/>                | 39371299263         | TRUE                    |
 | TOP 09                                | <https://www.facebook.com/top09cz/>                       | 90002267161         | TRUE                    |
-| Česká                                 
- pirátská strana                        | <https://www.facebook.com/ceska.piratska.strana/>         | 109323929038        | TRUE                    |
+| Česká pirátská strana                 | <https://www.facebook.com/ceska.piratska.strana/>         | 109323929038        | TRUE                    |
 | ODS                                   | <https://www.facebook.com/Jana.Cernochova/>               | 112718776235        | TRUE                    |
 | KSCM                                  | <https://www.facebook.com/konecna.k/>                     | 119624098506        | TRUE                    |
 | KDU-ČSL                               | <https://www.facebook.com/Belobradek>                     | 156945169098        | TRUE                    |
-| Evropský                              
- parlament - nekandiduje                | <https://www.facebook.com/europeanparliament/>            | 178362315106        | FALSE                   |
+| Evropský parlament - nekandiduje      | <https://www.facebook.com/europeanparliament/>            | 178362315106        | FALSE                   |
 | KDU                                   | <https://www.facebook.com/kducsl/>                        | 251656685576        | TRUE                    |
-| Starostové                            
- pro Liberecký kraj                     | <https://www.facebook.com/starostoveprolibereckykraj/>    | 258989695009        | TRUE                    |
+| Starostové pro Liberecký kraj         | <https://www.facebook.com/starostoveprolibereckykraj/>    | 258989695009        | TRUE                    |
 | Starostové (STAN)                     | <https://www.facebook.com/starostove/>                    | 370583064327        | TRUE                    |
-| ODS,                                  
- TOP09, KDU-ČSL                         | <https://www.facebook.com/spolu21/>                       | 100201752249169     | TRUE                    |
-| Generál ve výslužbě -                 
- nekandiduje                            | <https://www.facebook.com/generalpavel/>                  | 102389958091735     | TRUE                    |
-| Česká                                 
- pirátská strana                        | <https://www.facebook.com/olga.piratka.richterova>        | 102844685102730     | TRUE                    |
+| ODS, TOP09, KDU-ČSL                   | <https://www.facebook.com/spolu21/>                       | 100201752249169     | TRUE                    |
+| Generál ve výslužbě - nekandiduje     | <https://www.facebook.com/generalpavel/>                  | 102389958091735     | TRUE                    |
+| Česká pirátská strana                 | <https://www.facebook.com/olga.piratka.richterova>        | 102844685102730     | TRUE                    |
 | Přísaha                               | <https://www.facebook.com/robertslachtaofficial>          | 103430204491217     | TRUE                    |
 | KNHP -                                
  nekandiduje                            | <https://www.facebook.com/khnp.cz/>                       | 106008800769282     | TRUE                    |

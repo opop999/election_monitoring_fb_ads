@@ -76,8 +76,8 @@
 | TOP 09                                | <https://www.facebook.com/Marketa.AdamovaTOP09/>          | 1433946376688930    | TRUE                    |
 | Starostové (STAN)                     | <https://www.facebook.com/vitrakusancz/>                  | 1477535869227480    | TRUE                    |
 | ANO 2011                              | <https://www.facebook.com/KlaraDostalovaMMR>              | 1736314393286600    | TRUE                    |
-| ANO 2011                              | <https://www.facebook.com/karelhavlicek1ekonom>           | NO_ADS_UNKNOWN_ID   | FALSE                   |
-| ČSSD                                  | <https://www.facebook.com/hamacekjan/>                    | NO_ADS_UNKNOWN_ID   | FALSE                   |
-| SPD                                   | <https://www.facebook.com/foldynajaroslavofficial/>       | NO_ADS_UNKNOWN_ID   | FALSE                   |
+| ANO 2011                              | <https://www.facebook.com/karelhavlicek1ekonom>           | UNKNOWN_ID          | FALSE                   |
+| ČSSD                                  | <https://www.facebook.com/hamacekjan/>                    | UNKNOWN_ID          | FALSE                   |
+| SPD                                   | <https://www.facebook.com/foldynajaroslavofficial/>       | UNKNOWN_ID          | FALSE                   |
 | Evropská Komise v ČR                  | <https://www.facebook.com/EvropskaKomise.cz/>             | 397919187215        | TRUE                    |
 | Kancelář Evropského parlamentu        | <https://www.facebook.com/evropskyparlament/>             | 278212515809        | TRUE                    |

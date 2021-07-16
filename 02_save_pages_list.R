@@ -2,7 +2,7 @@
 # to be modified. We can add and remove the monitored FB pages and than we save
 # the list to a rds file, which is then read to the main extraction script.
 
-# The only limitation is that the maximum number of FB ids per item of the list 
+# The only limitation is that the maximum number of FB ids per item of the list
 # is limited to 10. This limitation comes directly from the Facebook API.
 
 # These ids are taken directly from the summary table "fb_profiles_urls_ids.csv"
@@ -60,10 +60,10 @@ parties_list <- list(c("102389958091735",
 # NOTE, the id "178362315106" does not work, it overwhelms the API when returning
 # the region data. This is because the account is of the EU parliament and the region
 # table includes all of the regions of the EU, instead of just Czech regions.
-# Workaround - instead include Czech-specific accounts of EU Commission (397919187215) 
+# Workaround - instead include Czech-specific accounts of EU Commission (397919187215)
 # and EU Parliament (278212515809).
 
-saveRDS(parties_list, "monitored_pages_list.rds", compress = FALSE)
+saveRDS(parties_list, "02_save_pages_list.rds", compress = FALSE)
 
 
 

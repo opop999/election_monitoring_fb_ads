@@ -10,27 +10,28 @@ full_ads_table <- readRDS("data/merged_data.rds")
 if (!dir.exists("data/summary_tables")) {
   dir.create("data/summary_tables")
 } else {
-  print("output directory already exists")  
+  print("output directory already exists")
 }
 
 # Creating a summary table focused on the detailed aspects of the advertising
 # Percentage figures rounded to 3 decimal places
-ad_summary <- full_ads_table %>% 
-              select(1:19) %>% 
-              group_by(page_name, page_id) %>% 
+ad_summary <- full_ads_table %>%
+              select(1:19) %>%
+              group_by(page_name, page_id) %>%
               summarise(total_ads = n(),
                         unique_ads = n_distinct(ad_creative_body),
                         percent_unique = round(unique_ads / total_ads, digits = 3),
                      # lower_spend = sum(spend_lower, na.rm = TRUE),
                      # upper_spend = sum(spend_upper, na.rm = TRUE),
                        avg_spend = round(((sum(spend_lower, na.rm = TRUE) + sum(spend_upper, na.rm = TRUE)) / 2), digits = 0),
+                       per_ad_avg_spend = round(avg_spend / total_ads, digits = 0),
                      # total_lower_impressions = sum(impressions_lower, na.rm = TRUE),
                      # total_upper_impressions = sum(impressions_upper, na.rm = TRUE),
                        total_avg_impressions = round(((sum(impressions_lower, na.rm = TRUE) + sum(impressions_upper, na.rm = TRUE)) / 2), digits = 0),
                        per_ad_avg_impression = round(total_avg_impressions / total_ads, digits = 0),
                        total_min_reach = sum(potential_reach_lower, na.rm = TRUE),
                        per_ad_min_reach = round(total_min_reach / total_ads, digits = 0),
-                       avg_ad_runtime = round(mean(ad_delivery_stop_time - ad_delivery_start_time, na.rm = TRUE), digits = 1)) %>% 
+                       avg_ad_runtime = round(mean(ad_delivery_stop_time - ad_delivery_start_time, na.rm = TRUE), digits = 1)) %>%
               arrange(desc(total_ads))
 
 # Writing the table to a csv file
@@ -38,25 +39,25 @@ write_csv(ad_summary, "data/summary_tables/ad_summary.csv")
 
 # Creating a summary table focused on the demographic aspects
 # Percentage figures rounded to 3 decimal places
-demographic_summary <- full_ads_table %>% 
-  transmute(page_name, 
+demographic_summary <- full_ads_table %>%
+  transmute(page_name,
          page_id,
          female_13_17 = `female_13-17`,
-         female_18_24 = `female_18-24`, 
+         female_18_24 = `female_18-24`,
          female_25_34 = `female_25-34`,
          female_35_44 = `female_35-44`,
-         female_45_54 = `female_45-54`,  
-         female_55_64 = `female_55-64`,   
-         female_65_plus = `female_65+`,     
-         male_13_17 = `male_13-17`,     
-         male_18_24 = `male_18-24`,  
-         male_25_34 = `male_25-34`,    
-         male_35_44 = `male_35-44`,    
-         male_45_54 = `male_45-54`,    
-         male_55_64 = `male_55-64`,     
-         male_65_plus = `male_65+`) %>% 
-  replace(is.na(.), 0) %>% 
-  group_by(page_name, page_id) %>% 
+         female_45_54 = `female_45-54`,
+         female_55_64 = `female_55-64`,
+         female_65_plus = `female_65+`,
+         male_13_17 = `male_13-17`,
+         male_18_24 = `male_18-24`,
+         male_25_34 = `male_25-34`,
+         male_35_44 = `male_35-44`,
+         male_45_54 = `male_45-54`,
+         male_55_64 = `male_55-64`,
+         male_65_plus = `male_65+`) %>%
+  replace(is.na(.), 0) %>%
+  group_by(page_name, page_id) %>%
   summarise(total_ads = n(),
             avg_female_13_17 = mean(female_13_17),
             avg_female_18_24 = mean(female_18_24),
@@ -80,8 +81,8 @@ demographic_summary <- full_ads_table %>%
             avg_35_44 = (avg_female_35_44 + avg_male_35_44),
             avg_45_54 = (avg_female_45_54 + avg_male_45_54),
             avg_55_64 = (avg_female_55_64 + avg_male_55_64),
-            avg_65_plus = (avg_female_65_plus + avg_male_65_plus)) %>% 
-            mutate(across(3:25, round, digits = 3)) %>% 
+            avg_65_plus = (avg_female_65_plus + avg_male_65_plus)) %>%
+            mutate(across(3:25, round, digits = 3)) %>%
   arrange(desc(total_ads))
 
 # Writing the table to a csv file
@@ -91,8 +92,8 @@ write_csv(demographic_summary, "data/summary_tables/demographic_summary.csv")
 # Creating a summary table focused on the regional aspects
 # We rename the Czech regions using Czech Statistical Office abbreviations
 # Percentage figures rounded to 3 decimal places
-region_summary <- full_ads_table %>% 
-  transmute(page_name, 
+region_summary <- full_ads_table %>%
+  transmute(page_name,
             page_id,
             pha = `Prague`,
             stc = `Central Bohemian Region`,
@@ -107,8 +108,8 @@ region_summary <- full_ads_table %>%
             jhm = `South Moravian Region`,
             olk = `Olomouc Region`,
             msk = `Moravian-Silesian Region`,
-            zlk = `Zlín Region`) %>% 
-  replace(is.na(.), 0) %>% 
+            zlk = `Zlín Region`) %>%
+  replace(is.na(.), 0) %>%
   group_by(page_name, page_id) %>%
   summarise(total_ads = n(),
             avg_pha = mean(pha),
@@ -124,16 +125,16 @@ region_summary <- full_ads_table %>%
             avg_jhm = mean(jhm),
             avg_olk = mean(olk),
             avg_msk = mean(msk),
-            avg_zlk = mean(zlk)) %>% 
-  mutate(across(3:16, round, digits = 3)) %>% 
+            avg_zlk = mean(zlk)) %>%
+  mutate(across(3:16, round, digits = 3)) %>%
   arrange(desc(total_ads))
 
 # Writing the table to a csv file
 write_csv(region_summary, "data/summary_tables/region_summary.csv")
 
-merged_summary <- ad_summary %>% 
-                  inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>% 
+merged_summary <- ad_summary %>%
+                  inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>%
                   inner_join(region_summary, by = c("page_name", "page_id", "total_ads"))
 
 write_csv(merged_summary, "data/summary_tables/merged_summary.csv")
-saveRDS(object = merged_summary, file = "data/summary_tables/merged_summary.rds", compress = FALSE) 
+saveRDS(object = merged_summary, file = "data/summary_tables/merged_summary.rds", compress = FALSE)

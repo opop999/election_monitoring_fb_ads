@@ -34,7 +34,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   
   # we need a for loop to get us the 3 distinct types of tables from the FB Ads.
   
-  for (i in 1:length(fields_vector)) {
+  for (i in seq_len(length(fields_vector))) {
   
    # Building the query
   query <- adlib_build_query(ad_reached_countries = "CZ", 
@@ -71,17 +71,19 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # The demographic and region datasets are in the "long" format
   # We need to transform them to a "wide" format which matches the ad dataset
   
-  dataset_demographic_wide <- pivot_wider(dataset_demographic, 
-                                          id_cols = adlib_id, 
-                                          names_from = c("gender", "age"), 
-                                          names_sort = TRUE,
-                                          values_from = percentage)
+  dataset_demographic_wide <- dataset_demographic %>% 
+                              mutate(across(percentage, round, 3)) %>% 
+                              pivot_wider(id_cols = adlib_id, 
+                              names_from = c("gender", "age"), 
+                              names_sort = TRUE,
+                              values_from = percentage)
   
-  dataset_region_wide <- pivot_wider(dataset_region, 
-                                     id_cols = adlib_id, 
+  dataset_region_wide <- dataset_region %>% 
+                         mutate(across(percentage, round, 3)) %>% 
+                         pivot_wider(id_cols = adlib_id, 
                                      names_from = region, 
                                      names_sort = TRUE,
-                                     values_from = percentage)  
+                                     values_from = percentage)   
   
  # Performing the join on common columns across the 3 datasets
   merged_dataset <- dataset_ad %>% 
@@ -91,7 +93,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
                                     "currency",
                                     "page_name",
                                     "page_id"), factor)) %>% 
-    arrange(desc(ad_creation_time))
+                    arrange(desc(ad_creation_time))
   
   # Finally, we save the merged dataset as well, both in the csv and rds formats
   # Rds will enable faster reading when using the dataset for further analyses

@@ -1,12 +1,13 @@
-# THIS VERSION OF THE SCRIPT IS CAPABLE OF EXTRACTING UNLIMITED AMOUNT OF FB PAGES,
-# WHOSE IDs WE HAVE TO SPECIFY IN A "PARTIES" LIST
+# THIS VERSION OF THE SCRIPT IS CAPABLE OF EXTRACTING 
+# UNLIMITED AMOUNT OF FB PAGES, WHOSE IDs WE HAVE TO 
+# SPECIFY IN A "PARTIES" LIST
 
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
 # We have to install the Radlibrary package, which is available only on GitHub
-# To install Radlibrary, we need to use install_github function from a lightweight
+# To install Radlibrary, we need to use install_github function from a 
 # remotes package. We also specify argument "upgrade" to never, so we do not get
-# a dialog window asking us whether to update when the script runs automatically.
+# a dialog window asking to update dependencies when script runs automatically.
 library(dplyr)
 library(readr)
 library(tidyr)
@@ -41,12 +42,12 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
 
   # We will be using 2 nested for loops for extraction
   # The outer for loop cycles over the list of parties
-  # The inner we need a for loop to get us the 3 distinct types of tables from the FB Ads.
+  # The inner for loop gets us the 3 distinct types of tables from the FB Ads.
   
- for (p in 1:length(parties_ids)) {
+ for (p in seq_len(length(parties_ids))) {
    print(paste("outer_loop", p))
    
-  for (i in 1:length(fields_vector)) {
+  for (i in seq_len(length(fields_vector))) {
     
     print(paste("inner_loop", i))
     # Building the query
@@ -83,31 +84,33 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
  }
 
   # C. MERGE PART OF THE FUNCTION
-  # After extraction of the three tables through the for loop, we transform and merge into one
-  # The demographic and region datasets are in the "long" format
-  # We need to transform them to a "wide" format which matches the ad dataset
+  # After extraction of the three tables through the for loop, we transform 
+  # and merge into one. The demographic & region datasets are in the "long" 
+  # format and we need a transformation to a "wide" format of the ad dataset
   
-  dataset_demographic_wide <- pivot_wider(dataset_demographic, 
-                                          id_cols = adlib_id, 
+  dataset_demographic_wide <- dataset_demographic %>% 
+                              mutate(across(percentage, round, 3)) %>% 
+                              pivot_wider(id_cols = adlib_id, 
                                           names_from = c("gender", "age"), 
                                           names_sort = TRUE,
                                           values_from = percentage)
   
-  dataset_region_wide <- pivot_wider(dataset_region, 
-                                     id_cols = adlib_id, 
+  dataset_region_wide <- dataset_region %>% 
+                         mutate(across(percentage, round, 3)) %>% 
+                         pivot_wider(id_cols = adlib_id, 
                                      names_from = region, 
                                      names_sort = TRUE,
                                      values_from = percentage)  
   
   # Performing the join on common columns across the 3 datasets
   merged_dataset <- dataset_ad %>% 
-    left_join(dataset_demographic_wide, by = "adlib_id") %>% 
-    left_join(dataset_region_wide, by = "adlib_id") %>% 
-    mutate(across(c("funding_entity", 
-                    "currency",
-                    "page_name",
-                    "page_id"), factor)) %>% 
-    arrange(desc(ad_creation_time))
+                    left_join(dataset_demographic_wide, by = "adlib_id") %>% 
+                    left_join(dataset_region_wide, by = "adlib_id") %>% 
+                    mutate(across(c("funding_entity", 
+                                    "currency",
+                                    "page_name",
+                                    "page_id"), factor)) %>% 
+                    arrange(desc(ad_creation_time))
   
   # We save each of the three tables in a memory to a dedicated csv and rds file
   # We save the merged dataset as well, both in the csv and rds formats
@@ -119,14 +122,11 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   myfile_region_csv <- paste0(directory, "/region_data.csv")
   myfile_merged_csv <- paste0(directory, "/merged_data.csv")
   myfile_merged_rds <- paste0(directory, "/merged_data.rds")
-  
   write_excel_csv(x = dataset_ad, file = myfile_ad_csv)
-  write_excel_csv(x = dataset_demographic, file = myfile_demo_csv)
-  write_excel_csv(x = dataset_region, file = myfile_region_csv)  
+  write_excel_csv(x = dataset_demographic_wide, file = myfile_demo_csv)
+  write_excel_csv(x = dataset_region_wide, file = myfile_region_csv)
   write_excel_csv(x = merged_dataset, file = myfile_merged_csv) 
-  
   saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE) 
-  
 }
 
 ############################### FUNCTION END ###################################
@@ -142,9 +142,10 @@ today <- format((Sys.Date()), "%Y-%m-%d")
 
 # In this script, we can specify potentially unlimited number of Page ids,
 # however, each item of the list is limited by 10 ids maximum in a numeric form.
-# The numeric ids are not easy to find for many pages and FB does not provide an easy way.
-# However, we can find numeric ids from the already queried table if we search
-# using the search_terms argument of the adlib_build_query function from Radlibrary.
+# The numeric ids are not easy to find for many pages and FB does 
+# not provide an easy way. However, we can find numeric ids from the already 
+# queried table if we search using the search_terms argument of the 
+# adlib_build_query function from Radlibrary.
 # To make this script more legible, ids are specified in a separate script file
 # named "monitored_pages_list.R" which also saves rds file that is loaded below.
 

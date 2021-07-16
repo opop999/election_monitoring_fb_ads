@@ -18,9 +18,11 @@
 -Using these datasets for further NLP textual analyses down the pipeline.
 
 ### Current status (14 July 2021):
--We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below or the csv file in the repository). Furthermore, we have a script that creates summary tables from the whole dataset. 
+-We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below or the CSV file in the repository). Furthermore, we have a script that creates summary tables from the whole dataset. 
 
--These scripts are operational within GitHub Actions workflow and run automatically once daily according to a cron trigger.
+-These scripts are operational within the GitHub Actions workflow and run automatically once daily according to a cron trigger.
+
+-Data on ads from some of the pages cannot be downloaded using the API. This is a problem for some pages, where we were unable to obtain their numeric ids. Furthermore, the European Parliament page (unlike the rest) returns a region table with all of the regions in the EU as columns, exceeding the bandwidth of the API. As a workaround, we included the profiles of Czech representation of the Parlaiment and Commission instead.
 
 ### Target political subjects (incomplete list - work in progress):
 

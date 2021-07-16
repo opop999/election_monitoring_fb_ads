@@ -15,6 +15,9 @@ library(remotes)
 remotes::install_github("facebookresearch/Radlibrary", upgrade = "never")
 library(Radlibrary)
 
+# Disable scientific notation of numbers
+options(scipen = 999)
+
 # PART 2: DEFINE THE FUNCTION THAT WILL EXTRACT, MERGE AND SAVE FB ADS DATASETS
 
 ############################### FUNCTION BEGGINING #############################

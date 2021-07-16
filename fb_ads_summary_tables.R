@@ -2,6 +2,7 @@ library(dplyr)
 library(readr)
 library(tidyr)
 
+# Disable scientific notation of numbers
 options(scipen = 999)
 
 full_ads_table <- readRDS("data/merged_data.rds")

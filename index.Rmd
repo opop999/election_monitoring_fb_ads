@@ -12,7 +12,7 @@ library(dplyr)
 library(ggplot2)
 library(plotly)
 
-summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds") 
+summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
 
 
 ```
@@ -23,13 +23,13 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-ggplotly(summary_dataset %>% 
-  filter(total_ads > 10) %>% 
-  arrange(desc(total_ads)) %>% 
+ggplotly(summary_dataset %>%
+  filter(total_ads > 10) %>%
+  arrange(desc(total_ads)) %>%
   ggplot(aes(x = total_ads, y = page_name, fill = percent_unique)) +
   geom_col() +
   xlab("Total number of ads since 1.1.2021") +
-  ylab(element_blank()) + 
+  ylab(element_blank()) +
   labs(fill = "Proportion unique ads"))
 
 

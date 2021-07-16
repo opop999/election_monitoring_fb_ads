@@ -13,11 +13,11 @@
 
 -Summary tables for each of the political FB pages.
 
--Visualisation with dashboard for each of the pages and one that compares them all.
+-Dashboard visualisation including summary key indicators and time-series, deployed using GitHub Pages.
 
 -Using these datasets for further NLP textual analyses down the pipeline.
 
-### Current status (14 July 2021):
+### Current status (15 July 2021):
 -We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below or the CSV file in the repository). Furthermore, we have a script that creates summary tables from the whole dataset. 
 
 -These scripts are operational within the GitHub Actions workflow and run automatically once daily according to a cron trigger.

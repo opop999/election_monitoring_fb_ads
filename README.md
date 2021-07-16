@@ -18,11 +18,11 @@
 -Using these datasets for further NLP textual analyses down the pipeline.
 
 ### Current status (14 July 2021):
--We have a script that extracts and transforms the FB and Instagram Ads from specified pages. Furthermore, we have a script that creates summary tables from the whole dataset. 
+-We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below or the csv file in the repository). Furthermore, we have a script that creates summary tables from the whole dataset. 
 
 -These scripts are operational within GitHub Actions workflow and run automatically once daily according to a cron trigger.
 
-### Target political subjects (incomplete list - work in progress)
+### Target political subjects (incomplete list - work in progress):
 
 | **POLITICAL SUBJECT**                 | **URL**                                                   | **NUMERIC ID**      |  **WORKS?**             |
 | :---                                  | :---                                                      | :---                | :---                    |

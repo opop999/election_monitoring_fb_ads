@@ -29,22 +29,25 @@ Column
 ### Chart A
 
 ```{r}
-
-summary_dataset$page_name = with(summary_dataset, reorder(page_name, total_ads))
+summary_dataset$page_name <- with(summary_dataset, reorder(page_name, total_ads))
 
 ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
   ggplot(aes(x = total_ads, y = page_name, fill = percent_unique)) +
   geom_col() +
-  scale_fill_gradient(low = "#fee0d2", high = "#de2d26",
-                      limits = c(0, 1), 
-                        breaks = c(0, 0.25, 0.50, 0.75, 1),
-                        labels = c("0%", "25%", "50%", "75%", "100%")) +
-  scale_x_continuous(breaks = seq(0, 2500, 250), 
-                    labels = seq(0, 2500, 250)) +
+  scale_fill_gradient(
+    low = "#fee0d2", high = "#de2d26",
+    limits = c(0, 1),
+    breaks = c(0, 0.25, 0.50, 0.75, 1),
+    labels = c("0%", "25%", "50%", "75%", "100%")
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 2500, 250),
+    labels = seq(0, 2500, 250)
+  ) +
   xlab("Total Ads") +
   ylab(element_blank()) +
-  labs(fill = "Proportion unique ads") + 
+  labs(fill = "Proportion unique ads") +
   ggtitle("Ads since 1.1.2021 of pages with more than 10 ads"))
 
 ```
@@ -55,25 +58,27 @@ Column
 ### Chart B
 
 ```{r}
-
-summary_dataset$page_name = with(summary_dataset, reorder(page_name, avg_spend))
+summary_dataset$page_name <- with(summary_dataset, reorder(page_name, avg_spend))
 
 ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
-  mutate(avg_spend_1000 = round(avg_spend / 1000, digits = 0),
-         per_ad_avg_spend_1000 = round(per_ad_avg_spend / 1000, digits = 0)) %>% 
+  mutate(
+    avg_spend_1000 = round(avg_spend / 1000, digits = 0),
+    per_ad_avg_spend_1000 = round(per_ad_avg_spend / 1000, digits = 0)
+  ) %>%
   ggplot(aes(x = avg_spend_1000, y = page_name, fill = per_ad_avg_spend_1000)) +
   geom_col() +
-  scale_fill_gradient(low = "#9ecae1", high = "#3182bd",
-                      # limits = c(0, 1), 
-                      # breaks = c(0, 0.25, 0.50, 0.75, 1),
-                      # labels = c("0%", "25%", "50%", "75%", "100%")
-                      ) +
-  # scale_x_continuous(breaks = seq(0, 2500, 250), 
+  scale_fill_gradient(
+    low = "#9ecae1", high = "#3182bd",
+    # limits = c(0, 1),
+    # breaks = c(0, 0.25, 0.50, 0.75, 1),
+    # labels = c("0%", "25%", "50%", "75%", "100%")
+  ) +
+  # scale_x_continuous(breaks = seq(0, 2500, 250),
   #                   labels = seq(0, 2500, 250)) +
   xlab("Total Spend (CZK thousands)") +
   ylab(element_blank()) +
-  labs(fill = "Per Ad (CZK thousands)") + 
+  labs(fill = "Per Ad (CZK thousands)") +
   ggtitle("Spending on ads since 1.1.2021"))
 ```
 Summary 2

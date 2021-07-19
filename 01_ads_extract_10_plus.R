@@ -47,44 +47,48 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # The outer for loop cycles over the list of parties
   # The inner for loop gets us the 3 distinct types of tables from the FB Ads.
 
- for (p in seq_len(length(parties_ids))) {
-   print(paste("outer_loop", p))
+  for (p in seq_len(length(parties_ids))) {
+    print(paste("outer_loop", p))
 
-  for (i in seq_len(length(fields_vector))) {
+    for (i in seq_len(length(fields_vector))) {
+      print(paste("inner_loop", i))
+      # Building the query
+      query <- adlib_build_query(
+        ad_reached_countries = "CZ",
+        ad_active_status = "ALL",
+        ad_delivery_date_max = max_date,
+        ad_delivery_date_min = "2021-01-01",
+        ad_type = "POLITICAL_AND_ISSUE_ADS",
+        publisher_platform = c("FACEBOOK", "INSTAGRAM"),
+        limit = 1000,
+        search_page_ids = parties_ids[[p]],
+        fields = fields_vector[i]
+      )
 
-    print(paste("inner_loop", i))
-    # Building the query
-    query <- adlib_build_query(ad_reached_countries = "CZ",
-                               ad_active_status = "ALL",
-                               ad_delivery_date_max = max_date,
-                               ad_delivery_date_min = "2021-01-01",
-                               ad_type = "POLITICAL_AND_ISSUE_ADS",
-                               publisher_platform = c("FACEBOOK", "INSTAGRAM"),
-                               limit = 1000,
-                               search_page_ids = parties_ids[[p]],
-                               fields = fields_vector[i])
+      # The call is limited to last 1000 results, pagination overcomes it
+      response <- adlib_get_paginated(query, token, max_gets = 10)
 
-    # The call is limited to last 1000 results, pagination overcomes it
-    response <- adlib_get_paginated(query, token, max_gets = 10)
+      assign(
+        paste0(
+          "dataset_",
+          table_type_vector[i], "_", print(p)
+        ),
+        as_tibble(response,
+          type = table_type_vector[i],
+          censor_access_token = TRUE
+        )
+      )
+    }
+    # With each iteration of the outer for loop, we append the dataset
+    new_rows <- get(paste0("dataset_ad_", print(p)))
+    dataset_ad <- bind_rows(dataset_ad, new_rows)
 
-    assign(paste0("dataset_",
-                  table_type_vector[i], "_", print(p)),
-           as_tibble(response,
-                     type = table_type_vector[i],
-                     censor_access_token = TRUE))
+    new_rows <- get(paste0("dataset_demographic_", print(p)))
+    dataset_demographic <- bind_rows(dataset_demographic, new_rows)
 
+    new_rows <- get(paste0("dataset_region_", print(p)))
+    dataset_region <- bind_rows(dataset_region, new_rows)
   }
-   # With each iteration of the outer for loop, we append the dataset
-   new_rows <- get(paste0("dataset_ad_", print(p)))
-   dataset_ad <- bind_rows(dataset_ad, new_rows)
-
-   new_rows <- get(paste0("dataset_demographic_", print(p)))
-   dataset_demographic <- bind_rows(dataset_demographic, new_rows)
-
-   new_rows <- get(paste0("dataset_region_", print(p)))
-   dataset_region <- bind_rows(dataset_region, new_rows)
-
- }
 
   # C. MERGE PART OF THE FUNCTION
   # After extraction of the three tables through the for loop, we transform
@@ -92,28 +96,34 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # format and we need a transformation to a "wide" format of the ad dataset
 
   dataset_demographic_wide <- dataset_demographic %>%
-                              mutate(across(percentage, round, 3)) %>%
-                              pivot_wider(id_cols = adlib_id,
-                                          names_from = c("gender", "age"),
-                                          names_sort = TRUE,
-                                          values_from = percentage)
+    mutate(across(percentage, round, 3)) %>%
+    pivot_wider(
+      id_cols = adlib_id,
+      names_from = c("gender", "age"),
+      names_sort = TRUE,
+      values_from = percentage
+    )
 
   dataset_region_wide <- dataset_region %>%
-                         mutate(across(percentage, round, 3)) %>%
-                         pivot_wider(id_cols = adlib_id,
-                                     names_from = region,
-                                     names_sort = TRUE,
-                                     values_from = percentage)
+    mutate(across(percentage, round, 3)) %>%
+    pivot_wider(
+      id_cols = adlib_id,
+      names_from = region,
+      names_sort = TRUE,
+      values_from = percentage
+    )
 
   # Performing the join on common columns across the 3 datasets
   merged_dataset <- dataset_ad %>%
-                    left_join(dataset_demographic_wide, by = "adlib_id") %>%
-                    left_join(dataset_region_wide, by = "adlib_id") %>%
-                    mutate(across(c("funding_entity",
-                                    "currency",
-                                    "page_name",
-                                    "page_id"), factor)) %>%
-                    arrange(desc(ad_creation_time))
+    left_join(dataset_demographic_wide, by = "adlib_id") %>%
+    left_join(dataset_region_wide, by = "adlib_id") %>%
+    mutate(across(c(
+      "funding_entity",
+      "currency",
+      "page_name",
+      "page_id"
+    ), factor)) %>%
+    arrange(desc(ad_creation_time))
 
   # We save each of the three tables in a memory to a dedicated csv and rds file
   # We save the merged dataset as well, both in the csv and rds formats
@@ -160,7 +170,9 @@ dir_name <- "data"
 # PART 4: RUNNING THE FUNCTION WITH APPROPRIATE ARGUMENTS
 
 # The end result should be 4 tables saved in the data folder
-get_all_tables_merge(token = token_fb_ads,
-                     parties_ids = parties,
-                     max_date = today,
-                     directory = dir_name)
+get_all_tables_merge(
+  token = token_fb_ads,
+  parties_ids = parties,
+  max_date = today,
+  directory = dir_name
+)

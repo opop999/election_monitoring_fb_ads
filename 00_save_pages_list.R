@@ -77,4 +77,4 @@ parties_list <- list(
 # Workaround - instead include Czech-specific accounts of EU Commission (397919187215)
 # and EU Parliament (278212515809).
 
-saveRDS(parties_list, "02_save_pages_list.rds", compress = FALSE)
+saveRDS(parties_list, "00_save_pages_list.rds", compress = FALSE)

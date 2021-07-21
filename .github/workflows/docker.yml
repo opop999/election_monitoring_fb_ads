@@ -24,7 +24,9 @@ jobs:
       run: Rscript 01_ads_extract_10_plus.R
     - name: Create summary tables 
       run: Rscript 02_create_summary_tables.R
-    - name: Update FlexDashboard for GitHub Pages  
+    - name: Install Flexdashboard package
+      run: Rscript -e "install.packages('flexdashboard')"
+    - name: Update Dashboard for GitHub Pages  
       run: Rscript -e "rmarkdown::render('index.Rmd')"
       
  # Add new files in specified folder, commit along with other modified files, push

@@ -24,13 +24,15 @@ jobs:
       run: Rscript 01_ads_extract_10_plus.R
     - name: Create summary tables 
       run: Rscript 02_create_summary_tables.R
+    - name: Update FlexDashboard for GitHub Pages  
+      run: Rscript -e "rmarkdown::render('index.Rmd')"
       
  # Add new files in specified folder, commit along with other modified files, push
     - name: Commit files
       run: |
         git config --local user.name actions-user
         git config --local user.email "actions@github.com"
-        git add data/*
+        git add data/* index.html
         git commit -am "GH Action $(date)"
         git push origin master
       env:

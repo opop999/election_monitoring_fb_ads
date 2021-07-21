@@ -23,7 +23,7 @@ jobs:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
       run: Rscript 01_ads_extract_10_plus.R
     - name: Create summary tables 
-      run: Rscript 03_create_summary_tables.R
+      run: Rscript 02_create_summary_tables.R
       
  # Add new files in specified folder, commit along with other modified files, push
     - name: Commit files

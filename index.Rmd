@@ -9,11 +9,17 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(forcats)
+# Package names
+packages <- c("flexdashboard", "dplyr", "ggplot2", "plotly", "forcats")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Packages loading
+invisible(lapply(packages, library, character.only = TRUE))
 
 summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
 

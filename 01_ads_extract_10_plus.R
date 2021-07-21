@@ -162,7 +162,7 @@ today <- format((Sys.Date()), "%Y-%m-%d")
 # To make this script more legible, ids are specified in a separate script file
 # named "monitored_pages_list.R" which also saves rds file that is loaded below.
 
-parties <- readRDS("02_save_pages_list.rds")
+parties <- readRDS("saved_pages_list.rds")
 
 # Specify the desired output folder
 dir_name <- "data"

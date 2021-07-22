@@ -1,6 +1,16 @@
-library(dplyr)
-library(readr)
-library(tidyr)
+## 1. Load the required R libraries
+
+# Package names
+packages <- c("dplyr", "readr", "tidyr")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Packages loading
+invisible(lapply(packages, library, character.only = TRUE))
 
 # Disable scientific notation of numbers
 options(scipen = 999)
@@ -12,6 +22,8 @@ if (!dir.exists("data/summary_tables")) {
 } else {
   print("output directory already exists")
 }
+
+## 2. Create summary tables and write them to a output file
 
 # Creating a summary table focused on the detailed aspects of the advertising
 # Percentage figures rounded to 3 decimal places
@@ -34,7 +46,8 @@ ad_summary <- full_ads_table %>%
     per_ad_min_reach = round(total_min_reach / total_ads, digits = 0),
     avg_ad_runtime = round(mean(ad_delivery_stop_time - ad_delivery_start_time, na.rm = TRUE), digits = 1)
   ) %>%
-  arrange(desc(total_ads))
+  arrange(desc(total_ads)) %>% 
+  ungroup()
 
 # Writing the table to a csv file
 write_csv(ad_summary, "data/summary_tables/ad_summary.csv")

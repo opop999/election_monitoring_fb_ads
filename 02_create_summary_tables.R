@@ -101,7 +101,8 @@ demographic_summary <- full_ads_table %>%
     avg_65_plus = (avg_female_65_plus + avg_male_65_plus)
   ) %>%
   mutate(across(3:25, round, digits = 3)) %>%
-  arrange(desc(total_ads))
+  arrange(desc(total_ads)) %>% 
+  ungroup()
 
 # Writing the table to a csv file
 write_csv(demographic_summary, "data/summary_tables/demographic_summary.csv")
@@ -148,7 +149,8 @@ region_summary <- full_ads_table %>%
     avg_zlk = mean(zlk)
   ) %>%
   mutate(across(3:16, round, digits = 3)) %>%
-  arrange(desc(total_ads))
+  arrange(desc(total_ads)) %>% 
+  ungroup()
 
 # Writing the table to a csv file
 write_csv(region_summary, "data/summary_tables/region_summary.csv")

@@ -38,7 +38,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   if (!dir.exists(directory)) {
     dir.create(directory)
   } else {
-    print("output directory already exists")
+    print("Output directory already exists")
   }
 
   # B. EXTRACTION PART OF THE FUNCTION
@@ -162,7 +162,7 @@ today <- format((Sys.Date()), "%Y-%m-%d")
 # To make this script more legible, ids are specified in a separate script file
 # named "monitored_pages_list.R" which also saves rds file that is loaded below.
 
-parties <- readRDS("saved_pages_list.rds")
+parties <- readRDS("data/saved_pages_list.rds")
 
 # Specify the desired output folder
 dir_name <- "data"

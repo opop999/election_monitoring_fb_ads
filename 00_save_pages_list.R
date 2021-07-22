@@ -77,4 +77,11 @@ parties_list <- list(
 # Workaround - instead include Czech-specific accounts of EU Commission (397919187215)
 # and EU Parliament (278212515809).
 
-saveRDS(parties_list, "saved_pages_list.rds", compress = FALSE)
+# We have to create a desired directory, if one does not yet exist
+if (!dir.exists("data")) {
+  dir.create("data")
+} else {
+  print("Output directory already exists")
+}
+
+saveRDS(parties_list, "data/saved_pages_list.rds", compress = FALSE)

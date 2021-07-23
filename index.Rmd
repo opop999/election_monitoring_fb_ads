@@ -132,10 +132,10 @@ spend_over_time <- ggplotly(
     filter(page_id %in% top_10_spenders$page_id) %>%
     mutate(
       ad_creation_time_week = as.Date(cut(ad_creation_time, breaks = "week", start.on.monday = TRUE)) + 4,
-      cumulative_spend_milion = round((cumulative_spend / 1000000), digits = 3)
+      cumulative_spend_million = round((cumulative_spend / 1000000), digits = 3)
     ) %>%
     group_by(page_name, ad_creation_time_week) %>% 
-    summarise(end_of_week_million_spend = max(cumulative_spend_milion)) %>% 
+    summarise(end_of_week_million_spend = max(cumulative_spend_million)) %>% 
     ungroup() %>% 
     ggplot(aes(x = ad_creation_time_week, y = end_of_week_million_spend, color = page_name)) +
     geom_line() +
@@ -158,7 +158,6 @@ spend_over_time <- ggplotly(
 spend_over_time
 
 htmlwidgets::saveWidget(spend_over_time, file = paste0(directory, "/spend_over_time.html"))
-
 
 ```
 
@@ -195,7 +194,6 @@ plot_gender <- ggplotly(
 plot_gender
 
 htmlwidgets::saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
-
 
 ```
 

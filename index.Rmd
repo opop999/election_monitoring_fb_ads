@@ -1,16 +1,24 @@
 ---
-title: "Advertisements Key Insights Summary"
+title: "Advertisements Key Insights"
+author: "Ondrej Pekacek/TI CZ"
 date: "Last updated `r format (Sys.time(),'%d. %m. %Y')`"
 output: 
   flexdashboard::flex_dashboard:
+    logo: "data/logo_ti.png"
+    theme: cosmo
     orientation: columns
     vertical_layout: fill
-    source_code: embed
+    source_code: https://github.com/opop999/election_monitoring_fb_ads
+    navbar:
+      - {title: "About", icon: "ion-information-circled", href: "https://www.transparentnivolby.cz/snemovna2021"}
 ---
 
 ```{r setup, include=FALSE}
+# Disable scientific notation of numbers
+options(scipen = 999)
+
 # Package names
-packages <- c("flexdashboard", "dplyr", "ggplot2", "plotly", "forcats")
+packages <- c("flexdashboard", "dplyr", "ggplot2", "plotly", "forcats", "htmlwidgets")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -23,26 +31,33 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
 
+# Specify output directory for individual html plots (to be embedded to website)
+directory <- "data/html_plots"
+
+# Check whether output directory exists to save individual plots
+if (!dir.exists(directory)) {
+  dir.create(directory)
+} else {
+  print("Output directory already exists")
+}
+
 ```
 
-Summary 1
+Total Ads
 =====================================
-
 
 Column
 -----------------------------------------------------------------------
 
-### Chart A
+### Total Ads
 
 ```{r}
-summary_dataset$page_name <- with(summary_dataset, reorder(page_name, total_ads))
-
-ggplotly(summary_dataset %>%
+plot_total_ads <- ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
-  ggplot(aes(x = total_ads, y = page_name, fill = percent_unique)) +
+  ggplot(aes(x = total_ads, y = reorder(page_name, total_ads), fill = percent_unique)) +
   geom_col() +
   scale_fill_gradient(
-    low = "#fee0d2", high = "#de2d26",
+    low = "#fbe8e7", high = "#db1d0b",
     limits = c(0, 1),
     breaks = c(0, 0.25, 0.50, 0.75, 1),
     labels = c("0%", "25%", "50%", "75%", "100%")
@@ -51,42 +66,49 @@ ggplotly(summary_dataset %>%
     breaks = seq(0, 2500, 250),
     labels = seq(0, 2500, 250)
   ) +
+  theme_minimal() +
   xlab("Total Ads") +
   ylab(element_blank()) +
   labs(fill = "Proportion unique ads") +
   ggtitle("Ads since 1.1.2021 of pages with more than 10 ads"))
 
+plot_total_ads
+
 ```
+
+Total Spending
+=====================================
 
 Column 
 -----------------------------------------------------------------------
 
-### Chart B
+### Total Spending
 
 ```{r}
-summary_dataset$page_name <- with(summary_dataset, reorder(page_name, avg_spend))
-
 ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
   mutate(
     avg_spend_1000 = round(avg_spend / 1000, digits = 0),
-    per_ad_avg_spend_1000 = round(per_ad_avg_spend / 1000, digits = 0)
+    per_ad_avg_spend_1000 = round(per_ad_avg_spend / 1000, digits = 1)
   ) %>%
-  ggplot(aes(x = avg_spend_1000, y = page_name, fill = per_ad_avg_spend_1000)) +
+  ggplot(aes(x = avg_spend_1000, y = reorder(page_name, avg_spend), fill = per_ad_avg_spend_1000)) +
   geom_col() +
   scale_fill_gradient(
-    low = "#9ecae1", high = "#3182bd",
-    # limits = c(0, 1),
-    # breaks = c(0, 0.25, 0.50, 0.75, 1),
-    # labels = c("0%", "25%", "50%", "75%", "100%")
+    low = "#e6ecf2", high = "#03457f",
+    limits = c(0, 10)
   ) +
-  # scale_x_continuous(breaks = seq(0, 2500, 250),
-  #                   labels = seq(0, 2500, 250)) +
+  scale_x_continuous(breaks = seq(0, 3000, 250),
+                    labels = seq(0, 3000, 250)) +
   xlab("Total Spend (CZK thousands)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad (CZK thousands)") +
   ggtitle("Spending on ads since 1.1.2021"))
 ```
-Summary 2
+
+Spending in Time
 =====================================
+
+```{r}
+
+```
 

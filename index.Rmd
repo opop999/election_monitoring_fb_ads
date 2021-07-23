@@ -1,5 +1,5 @@
 ---
-title: "Advertisements Key Insights"
+title: "FB & INSTAGRAM POLITICAL ADS"
 author: "Ondrej Pekacek/TI CZ"
 date: "Last updated `r format (Sys.time(),'%d. %m. %Y')`"
 output: 
@@ -239,7 +239,7 @@ plot_age <- ggplotly(
 
 plot_age
 
-htmlwidgets::saveWidget(plot_gender, file = paste0(directory, "/plot_age.html"))
+htmlwidgets::saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
 
 ```
 

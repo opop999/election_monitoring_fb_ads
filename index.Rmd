@@ -18,7 +18,7 @@ output:
 options(scipen = 999)
 
 # Package names
-packages <- c("flexdashboard", "dplyr", "ggplot2", "plotly", "forcats", "htmlwidgets")
+packages <- c("flexdashboard", "dplyr", "ggplot2", "plotly", "forcats", "htmlwidgets", "tidyr")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -41,6 +41,11 @@ if (!dir.exists(directory)) {
 } else {
   print("Output directory already exists")
 }
+
+# Select TOP 10 biggest spenders for plotting
+top_10_spenders <- summary_dataset %>%
+  slice_max(avg_spend, n = 10) %>%
+  select(page_name, page_id, avg_spend)
 
 ```
 
@@ -113,7 +118,7 @@ htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_tot
 
 ```
 
-Spending in Time
+Time
 =====================================
 
 Column 
@@ -122,30 +127,28 @@ Column
 ### Spending in time
 
 ```{r}
-
-# Select TOP 10 biggest spenders for plotting
-top_10_spenders <- summary_dataset %>% 
-  slice_max(avg_spend, n = 10) %>% 
-  select(page_name, page_id, avg_spend)
-
-# Set the election date as a positon of a red vertical line in the plot
-election_date <- as.Date("2021-10-08")
-
 spend_over_time <- ggplotly(
-    time_dataset %>%
-    filter(page_id %in% top_10_spenders$page_id) %>% 
-    mutate(cumulative_spend_milion = round((cumulative_spend / 1000000), digits = 3)) %>% 
-    ggplot(aes(x = ad_creation_time, y = cumulative_spend_milion, color = page_name)) +
+  time_dataset %>%
+    filter(page_id %in% top_10_spenders$page_id) %>%
+    mutate(
+      ad_creation_time_week = as.Date(cut(ad_creation_time, breaks = "week", start.on.monday = TRUE)) + 4,
+      cumulative_spend_milion = round((cumulative_spend / 1000000), digits = 3)
+    ) %>%
+    group_by(page_name, ad_creation_time_week) %>% 
+    summarise(end_of_week_million_spend = max(cumulative_spend_milion)) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = ad_creation_time_week, y = end_of_week_million_spend, color = page_name)) +
     geom_line() +
-    geom_vline(aes(xintercept = as.numeric(election_date)), color = "#db1d0b") +
-    geom_text(aes(x = election_date, y = 0, label = "elections"), color = "#03457f", size = 4, angle = 90, vjust = -0.4, hjust = 0) +
+    geom_point(size = 0.8) +
+    geom_vline(aes(xintercept = as.numeric(as.Date("2021-10-08"))), color = "#db1d0b") +
+    geom_text(aes(x = as.Date("2021-10-08"), y = 0.2, label = "elections"), color = "#03457f", size = 4) +
     theme_minimal() +
     scale_y_continuous(
       breaks = seq(0, 5, 0.5),
       labels = seq(0, 5, 0.5)
     ) +
     scale_x_date(date_breaks = "1 months", date_labels = "%m") +
-    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-26"))) +
+    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-05")), expand = TRUE) +
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
@@ -158,4 +161,86 @@ htmlwidgets::saveWidget(spend_over_time, file = paste0(directory, "/spend_over_t
 
 
 ```
+
+Gender
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Ads by Gender
+
+```{r}
+plot_gender <- ggplotly(
+  summary_dataset %>%
+    filter(total_ads > 10) %>%
+    ggplot(aes(x = avg_male, y = reorder(page_name, avg_male), fill = avg_male)) +
+    geom_col() +
+    geom_vline(aes(xintercept = 0.5, color = "#db0b50")) +
+    scale_fill_gradient(
+      low = "#db1d0b", high = "#03457f",
+    ) +
+    scale_x_continuous(
+      limits = c(0, 1),
+      breaks = seq(0, 1, 0.25),
+      labels = c("0%", "25%", "50%", "75%", "100%")
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none") +
+    xlab("Proportion Ads Targeting Male Audience") +
+    ylab(element_blank()) +
+    ggtitle("Proportion of Ads since 1.1.2021 targeting Male Audience")
+)
+
+plot_gender
+
+htmlwidgets::saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
+
+
+```
+
+Age
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Ads by Age
+
+```{r}
+plot_age <- ggplotly(
+  summary_dataset %>%
+    filter(page_id %in% top_10_spenders$page_id) %>%
+    select(
+      page_name,
+      avg_18_24,
+      avg_25_34,
+      avg_35_44,
+      avg_45_54,
+      avg_55_64,
+      avg_65_plus
+    ) %>%
+    pivot_longer(cols = 2:7, names_to = "age_group", values_to = "proportion", values_drop_na = TRUE) %>%
+    ggplot(aes(x = age_group, y = proportion, fill = page_name)) +
+    geom_col(position = "dodge2") +
+    scale_x_discrete(labels = c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")) +
+    scale_fill_brewer(palette = "Paired") +
+    scale_y_continuous(
+      limits = c(0, 0.5),
+      breaks = seq(0, 0.5, 0.1),
+      labels = c("0%", "10%", "20%", "30%", "40%", "50%")
+    ) +
+    theme_minimal() +
+    theme(legend.title = element_blank()) +
+    xlab(element_blank()) +
+    ylab(element_blank()) +
+    ggtitle("Proportion of Ads since 1.1.2021 targeting specific age groups (top 10 spenders)")
+)
+
+plot_age
+
+htmlwidgets::saveWidget(plot_gender, file = paste0(directory, "/plot_age.html"))
+
+```
+
 

@@ -108,6 +108,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
       "page_name",
       "page_id"
     ), factor)) %>%
+    filter(ad_creation_time >= as.Date("2021-01-01")) %>%
     arrange(desc(ad_creation_time))
 
   # Finally, we save the merged dataset as well, both in the csv and rds formats

@@ -20,7 +20,7 @@ full_ads_table <- readRDS("data/merged_data.rds")
 if (!dir.exists("data/summary_tables")) {
   dir.create("data/summary_tables")
 } else {
-  print("output directory already exists")
+  print("Output directory already exists")
 }
 
 ## 2. Create summary tables and write them to a output file
@@ -46,7 +46,7 @@ ad_summary <- full_ads_table %>%
     per_ad_min_reach = round(total_min_reach / total_ads, digits = 0),
     avg_ad_runtime = round(mean(ad_delivery_stop_time - ad_delivery_start_time, na.rm = TRUE), digits = 1)
   ) %>%
-  arrange(desc(total_ads)) %>% 
+  arrange(desc(total_ads)) %>%
   ungroup()
 
 # Writing the table to a csv file
@@ -101,7 +101,7 @@ demographic_summary <- full_ads_table %>%
     avg_65_plus = (avg_female_65_plus + avg_male_65_plus)
   ) %>%
   mutate(across(3:25, round, digits = 3)) %>%
-  arrange(desc(total_ads)) %>% 
+  arrange(desc(total_ads)) %>%
   ungroup()
 
 # Writing the table to a csv file
@@ -149,15 +149,35 @@ region_summary <- full_ads_table %>%
     avg_zlk = mean(zlk)
   ) %>%
   mutate(across(3:16, round, digits = 3)) %>%
-  arrange(desc(total_ads)) %>% 
+  arrange(desc(total_ads)) %>%
   ungroup()
 
-# Writing the table to a csv file
+# Writing the table to a csv
 write_csv(region_summary, "data/summary_tables/region_summary.csv")
 
+# Creating a summary table with cumulative spending per page throughout time
+time_summary <- full_ads_table %>%
+  arrange(ad_creation_time) %>%
+  transmute(ad_creation_time,
+            page_name,
+            page_id,
+            avg_spend = (spend_lower + spend_upper) / 2
+            ) %>%
+  group_by(page_name) %>%
+  mutate(cumulative_spend = cumsum(avg_spend)) %>%
+  ungroup()
+
+write_csv(time_summary, "data/summary_tables/time_summary.csv")
+saveRDS(object = time_summary, file = "data/summary_tables/time_summary.rds", compress = FALSE)
+
+
+# Merge ad, demogtaphic and region table to one
 merged_summary <- ad_summary %>%
   inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>%
   inner_join(region_summary, by = c("page_name", "page_id", "total_ads"))
 
 write_csv(merged_summary, "data/summary_tables/merged_summary.csv")
 saveRDS(object = merged_summary, file = "data/summary_tables/merged_summary.rds", compress = FALSE)
+
+
+

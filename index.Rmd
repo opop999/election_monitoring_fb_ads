@@ -30,6 +30,7 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 
 summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
+time_dataset <- readRDS(file = "data/summary_tables/time_summary.rds")
 
 # Specify output directory for individual html plots (to be embedded to website)
 directory <- "data/html_plots"
@@ -74,6 +75,8 @@ plot_total_ads <- ggplotly(summary_dataset %>%
 
 plot_total_ads
 
+htmlwidgets::saveWidget(plot_total_ads, file = paste0(directory, "/plot_total_ads.html"))
+
 ```
 
 Total Spending
@@ -85,7 +88,7 @@ Column
 ### Total Spending
 
 ```{r}
-ggplotly(summary_dataset %>%
+plot_total_spending <- ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
   mutate(
     avg_spend_1000 = round(avg_spend / 1000, digits = 0),
@@ -103,12 +106,56 @@ ggplotly(summary_dataset %>%
   ylab(element_blank()) +
   labs(fill = "Per Ad (CZK thousands)") +
   ggtitle("Spending on ads since 1.1.2021"))
+
+plot_total_spending
+
+htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+
 ```
 
 Spending in Time
 =====================================
 
+Column 
+-----------------------------------------------------------------------
+
+### Spending in time
+
 ```{r}
+
+# Select TOP 10 biggest spenders for plotting
+top_10_spenders <- summary_dataset %>% 
+  slice_max(avg_spend, n = 10) %>% 
+  select(page_name, page_id, avg_spend)
+
+# Set the election date as a positon of a red vertical line in the plot
+election_date <- as.Date("2021-10-08")
+
+spend_over_time <- ggplotly(
+    time_dataset %>%
+    filter(page_id %in% top_10_spenders$page_id) %>% 
+    mutate(cumulative_spend_milion = round((cumulative_spend / 1000000), digits = 3)) %>% 
+    ggplot(aes(x = ad_creation_time, y = cumulative_spend_milion, color = page_name)) +
+    geom_line() +
+    geom_vline(aes(xintercept = as.numeric(election_date)), color = "#db1d0b") +
+    geom_text(aes(x = election_date, y = 0, label = "elections"), color = "#03457f", size = 4, angle = 90, vjust = -0.4, hjust = 0) +
+    theme_minimal() +
+    scale_y_continuous(
+      breaks = seq(0, 5, 0.5),
+      labels = seq(0, 5, 0.5)
+    ) +
+    scale_x_date(date_breaks = "1 months", date_labels = "%m") +
+    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-26"))) +
+    theme(legend.title = element_blank()) +
+    xlab(element_blank()) +
+    ylab(element_blank()) +
+    ggtitle("Spending (in millions CZK) on FB Ads, January 2021-present")
+)
+
+spend_over_time
+
+htmlwidgets::saveWidget(spend_over_time, file = paste0(directory, "/spend_over_time.html"))
+
 
 ```
 

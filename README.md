@@ -95,7 +95,7 @@
 | Svobodní											  | <https://www.facebook.com/valentaivo/>                    | 1414644678821208 | TRUE       |
 | STAN  													| <https://www.facebook.com/martin.baxa/>           			  | 146713862010620  | TRUE       |
 | SPOLU 												  | <https://www.facebook.com/pavelsvobodapardubice/>         | 104264008348176  | TRUE       |
-| SPOLU	                          | <https://www.facebook.com/havelztopky/>            			  | 278212515809     | TRUE       |
+| SPOLU	                          | <https://www.facebook.com/havelztopky/>            			  | 351488672592066  | TRUE       |
 | STAN													  | <https://www.facebook.com/tomasgolansenator/>             | 1917661888252695 | TRUE       |
 | SPOLU													  | <https://www.facebook.com/Ing.StanislavBlaha/>            | 495496033796328  | TRUE       |
 | KDU-ČSL												  | <https://www.facebook.com/HejtmanJMK/>            				| 1681478228766601 | TRUE       |

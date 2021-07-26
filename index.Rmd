@@ -90,7 +90,7 @@ Total Spending
 Column 
 -----------------------------------------------------------------------
 
-### Total Spending
+### Total Spending 
 
 ```{r}
 plot_total_spending <- ggplotly(summary_dataset %>%
@@ -101,12 +101,16 @@ plot_total_spending <- ggplotly(summary_dataset %>%
   ) %>%
   ggplot(aes(x = avg_spend_1000, y = reorder(page_name, avg_spend), fill = per_ad_avg_spend_1000)) +
   geom_col() +
-  scale_fill_gradient(
-    low = "#e6ecf2", high = "#03457f",
-    limits = c(0, 10)
+  scale_fill_gradient2(
+    low = "#cddae5", 
+    mid = "#03457f",
+    high = "#023766",
+    midpoint = 12,
+    limits = c(0, 25)
   ) +
   scale_x_continuous(breaks = seq(0, 3000, 250),
                     labels = seq(0, 3000, 250)) +
+  theme_minimal() +
   xlab("Total Spend (CZK thousands)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad (CZK thousands)") +
@@ -118,13 +122,118 @@ htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_tot
 
 ```
 
-Time
+Ad Runtime
 =====================================
 
 Column 
 -----------------------------------------------------------------------
 
-### Spending in time
+### Ad Runtime 
+
+```{r}
+plot_total_spending <- ggplotly(summary_dataset %>%
+  filter(total_ads > 10) %>%
+  ggplot(aes(x = avg_ad_runtime, y = reorder(page_name, avg_ad_runtime))) +
+  geom_col(fill = "#026663") +
+  scale_x_continuous(breaks = seq(0, 30, 2),
+                    labels = seq(0, 30, 2)) +
+  theme_minimal() +
+  xlab("Days") +
+  ylab(element_blank()) +
+  ggtitle("Average Ad runtime since 1.1.2021"))
+
+plot_total_spending
+
+htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+
+```
+
+
+Total Impressions
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Total Impressions (square root scale)
+
+```{r}
+plot_total_impressions <- ggplotly(summary_dataset %>%
+  filter(total_ads > 10) %>%
+  mutate(
+    avg_impressions_million = round(total_avg_impressions / 1000000, digits = 3),
+    per_ad_avg_impressions_1000 = round(per_ad_avg_impression / 1000, digits = 1)
+  ) %>%
+  ggplot(aes(x = avg_impressions_million, y = reorder(page_name, avg_impressions_million), fill = per_ad_avg_impressions_1000)) +
+  geom_col() +
+  scale_fill_gradient2(
+    low = "#e7fbe8",
+    mid = "#089914",
+    high = "#011603",
+    midpoint = 200,
+    limits = c(0, 400)
+  ) +
+  scale_x_sqrt(breaks = seq(0, 100, 10),
+                    labels = seq(0, 100, 10)) +
+  theme_minimal() +
+  xlab("Total Impressions (millions)") +
+  ylab(element_blank()) +
+  labs(fill = "Per Ad impressions (thousands)") +
+  ggtitle("Total impression of political ads since 1.1.2021, square root scale"))
+
+plot_total_impressions
+
+htmlwidgets::saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impressions.html"))
+
+```
+
+
+Total Reach (minimal)
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Total Reach (minimal, square root scale)
+
+```{r}
+plot_total_reach <- ggplotly(summary_dataset %>%
+  filter(total_ads > 10) %>%
+  mutate(
+    avg_min_reach_million = round(total_min_reach / 1000000, digits = 2),
+    per_ad_avg_min_reach_1000 = round(per_ad_min_reach / 1000, digits = 0)
+  ) %>%
+  ggplot(aes(x = avg_min_reach_million, y = reorder(page_name, avg_min_reach_million), fill = per_ad_avg_min_reach_1000)) +
+  geom_col() +
+  scale_fill_gradient2(
+    low = "#f0e6eb",
+    mid = "#660237",
+    high = "#14000b",
+    midpoint = 500,
+    limits = c(0, 1000)
+  ) +
+  scale_x_sqrt(breaks = seq(0, 5000, 250),
+                     labels = seq(0, 5000, 250)) +
+  theme_minimal() +
+  xlab("Total reach (millions)") +
+  ylab(element_blank()) +
+  labs(fill = "Per Ad reach (thousands)") +
+  ggtitle("Total (minimal) reach of political ads since 1.1.2021, square root scale"))
+
+plot_total_reach
+
+htmlwidgets::saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
+
+```
+
+
+Spending & Time
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Spending in time (10 biggest spenders)
 
 ```{r}
 spend_over_time <- ggplotly(
@@ -188,7 +297,7 @@ plot_gender <- ggplotly(
     theme(legend.position = "none") +
     xlab("Proportion Ads Targeting Male Audience") +
     ylab(element_blank()) +
-    ggtitle("Proportion of Ads since 1.1.2021 targeting Male Audience")
+    ggtitle("Proportion of Ads since 1.1.2021 targeting male users")
 )
 
 plot_gender
@@ -203,7 +312,7 @@ Age
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Age
+### Ads by Age (10 biggest spenders)
 
 ```{r}
 plot_age <- ggplotly(
@@ -232,7 +341,7 @@ plot_age <- ggplotly(
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
-    ggtitle("Proportion of Ads since 1.1.2021 targeting specific age groups (top 10 spenders)")
+    ggtitle("Proportion of Ads since 1.1.2021 targeting specific age groups")
 )
 
 plot_age
@@ -241,4 +350,57 @@ htmlwidgets::saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
 
 ```
 
+
+
+Region
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Ads by Region (10 biggest spenders)
+
+```{r}
+plot_region <- ggplotly(
+  summary_dataset %>%
+    filter(page_id %in% top_10_spenders$page_id) %>%
+    select(
+      page_name,
+      avg_pha,
+      avg_stc, 
+      avg_jhc, 
+      avg_plk, 
+      avg_kvk, 
+      avg_ulk, 
+      avg_lbk, 
+      avg_hkk,
+      avg_pak,
+      avg_vys,
+      avg_jhm,
+      avg_olk,
+      avg_msk, 
+      avg_zlk
+    ) %>%
+    pivot_longer(cols = 2:15, names_to = "region_group", values_to = "proportion", values_drop_na = TRUE) %>%
+    ggplot(aes(x = region_group, y = proportion, fill = page_name)) +
+    geom_col(position = "dodge2") +
+   scale_x_discrete(labels = c("HKK", "JHC", "JHM", "KVK", "LBK", "MSK", "OLK", "PAK", "PHA", "PLK", "STC", "ULK", "VYS", "ZLK")) +
+    scale_fill_brewer(palette = "Paired") +
+    scale_y_continuous(
+      limits = c(0, 0.5),
+      breaks = seq(0, 0.5, 0.1),
+      labels = c("0%", "10%", "20%", "30%", "40%", "50%")
+    ) +
+    theme_minimal() +
+    theme(legend.title = element_blank()) +
+    xlab(element_blank()) +
+    ylab(element_blank()) +
+    ggtitle("Proportion of Ads since 1.1.2021 targeting specific age groups")
+)
+
+plot_region
+
+htmlwidgets::saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
+
+```
 

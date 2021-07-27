@@ -32,8 +32,9 @@ invisible(lapply(packages, library, character.only = TRUE))
 summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
 time_dataset <- readRDS(file = "data/summary_tables/time_summary.rds")
 
-# Specify output directory for individual html plots (to be embedded to website)
+# Specify output directory, which we also set as an environmental variable
 directory <- "data/html_plots"
+Sys.setenv(DIRECTORY = directory)
 
 # Check whether output directory exists to save individual plots
 if (!dir.exists(directory)) {
@@ -43,9 +44,15 @@ if (!dir.exists(directory)) {
 }
 
 # Select TOP 10 biggest spenders for plotting
+# TEMPORARY SUBFILTER:
+# Filter out entities, which are not current 2021 election candidates
 top_10_spenders <- summary_dataset %>%
+  filter(!page_id %in% c(102389958091735, 728495140691300)) %>% 
   slice_max(avg_spend, n = 10) %>%
   select(page_name, page_id, avg_spend)
+
+# Election date for vertical line in the time-plots
+election_date <- as.Date("2021-10-08")
 
 ```
 
@@ -80,7 +87,7 @@ plot_total_ads <- ggplotly(summary_dataset %>%
 
 plot_total_ads
 
-htmlwidgets::saveWidget(plot_total_ads, file = paste0(directory, "/plot_total_ads.html"))
+saveWidget(plot_total_ads, file = paste0(directory, "/plot_total_ads.html"))
 
 ```
 
@@ -120,7 +127,7 @@ plot_total_spending <- ggplotly(summary_dataset %>%
 
 plot_total_spending
 
-htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
 
 ```
 
@@ -148,7 +155,7 @@ plot_total_spending <- ggplotly(summary_dataset %>%
 
 plot_total_spending
 
-htmlwidgets::saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
 
 ```
 
@@ -189,7 +196,7 @@ plot_total_impressions <- ggplotly(summary_dataset %>%
 
 plot_total_impressions
 
-htmlwidgets::saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impressions.html"))
+saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impressions.html"))
 
 ```
 
@@ -230,7 +237,7 @@ plot_total_reach <- ggplotly(summary_dataset %>%
 
 plot_total_reach
 
-htmlwidgets::saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
+saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
 
 ```
 
@@ -257,26 +264,71 @@ spend_over_time <- ggplotly(
     ggplot(aes(x = ad_creation_time_week, y = end_of_week_million_spend, color = page_name)) +
     geom_line() +
     geom_point(size = 0.8) +
-    geom_vline(aes(xintercept = as.numeric(as.Date("2021-10-08"))), color = "#db1d0b") +
-    geom_text(aes(x = as.Date("2021-10-08"), y = 0.2, label = "elections"), color = "#03457f", size = 4) +
+    geom_vline(aes(xintercept = as.numeric(election_date)), color = "#db1d0b") +
+    geom_text(aes(x = election_date, y = 0.2, label = "elections"), color = "#03457f", size = 4) +
     theme_minimal() +
     scale_y_continuous(
-      breaks = seq(0, 5, 0.5),
-      labels = seq(0, 5, 0.5)
+      breaks = seq(0, 5, 0.25),
+      labels = seq(0, 5, 0.25)
     ) +
-    scale_x_date(date_breaks = "1 months", date_labels = "%m") +
+    scale_x_date(date_breaks = "1 months", date_labels = "%d.%m.%y") +
     coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-05")), expand = TRUE) +
-    theme(legend.title = element_blank()) +
+    theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
-    ylab(element_blank()) +
+    ylab("CZK million") +
     ggtitle("Spending (in millions CZK) on FB Ads, January 2021-present")
 )
 
 spend_over_time
 
-htmlwidgets::saveWidget(spend_over_time, file = paste0(directory, "/spend_over_time.html"))
+saveWidget(spend_over_time, file = paste0(directory, "/plot_spend_over_time.html"))
 
 ```
+
+Spending Weekly
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Spending Weekly (10 biggest spenders)
+
+```{r}
+spend_weekly <- ggplotly(
+  time_dataset %>%
+    filter(page_id %in% top_10_spenders$page_id) %>%
+    mutate(
+      end_of_week = as.Date(cut(ad_creation_time, breaks = "week", start.on.monday = TRUE)) + 4,
+    ) %>%
+    group_by(page_name, end_of_week) %>% 
+    summarise(by_week_thousands_spend = round(sum(avg_spend) / 1000, digits = 0)) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = end_of_week, y = by_week_thousands_spend, fill = page_name)) +
+    geom_col(width = 5.5) +
+    geom_vline(aes(xintercept = as.numeric(election_date)), color = "#db1d0b") +
+    geom_text(aes(x = election_date, y = 0.2, label = "elections"), color = "#03457f", size = 4) +
+    theme_minimal() +
+    scale_y_continuous(
+      breaks = seq(0, 1000, 100),
+      labels = seq(0, 1000, 100)
+    ) +
+    scale_x_date(date_breaks = "1 months", date_labels = "%d.%m.%y") +
+    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-05")), expand = TRUE) +
+    theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
+    xlab(element_blank()) +
+    ylab("CZK thousand") +
+    ggtitle("Weekly spending (in thousands CZK) on FB Ads, January 2021-present")
+)
+
+spend_weekly
+
+saveWidget(spend_weekly, file = paste0(directory, "/plot_spend_weekly.html"))
+
+```
+
+
+
+
 
 Gender
 =====================================
@@ -310,7 +362,7 @@ plot_gender <- ggplotly(
 
 plot_gender
 
-htmlwidgets::saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
+saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
 
 ```
 
@@ -354,7 +406,7 @@ plot_age <- ggplotly(
 
 plot_age
 
-htmlwidgets::saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
+saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
 
 ```
 
@@ -408,7 +460,23 @@ plot_region <- ggplotly(
 
 plot_region
 
-htmlwidgets::saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
+saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
+
+```
+
+
+
+
+
+
+```{r cleanup, include=FALSE}
+# Because the saveWidget function does not correctly delete the dependency files
+# which are used to create individual self-sustaining widgets, we have to delete
+# them using bash command, with environmental variable DIRECTORY same as directory
+# set at the very beginning. All non-html files in output folder are deleted.
+
+system("find $DIRECTORY ! -name '*.html' -type f -delete")
+system("find $DIRECTORY -type d -empty -delete")
 
 ```
 

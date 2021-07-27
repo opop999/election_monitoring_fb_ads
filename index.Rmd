@@ -54,6 +54,10 @@ top_10_spenders <- summary_dataset %>%
 # Election date for vertical line in the time-plots
 election_date <- as.Date("2021-10-08")
 
+# Graph zoom date end & beginning
+start_date <- as.Date("2021-01-01")
+end_date <- as.Date("2021-11-05")
+
 ```
 
 Total Ads
@@ -83,7 +87,7 @@ plot_total_ads <- ggplotly(summary_dataset %>%
   xlab("Total Ads") +
   ylab(element_blank()) +
   labs(fill = "Proportion unique ads") +
-  ggtitle("Ads since 1.1.2021 of pages with more than 10 ads"))
+  ggtitle(paste("Ads since", format(start_date, "%d.%m.%Y"), "of pages with more than 10 ads")))
 
 plot_total_ads
 
@@ -272,7 +276,7 @@ spend_over_time <- ggplotly(
       labels = seq(0, 5, 0.25)
     ) +
     scale_x_date(date_breaks = "1 months", date_labels = "%d.%m.%y") +
-    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-05")), expand = TRUE) +
+    coord_cartesian(xlim = c(start_date, end_date), expand = TRUE) +
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK million") +
@@ -313,7 +317,7 @@ spend_weekly <- ggplotly(
       labels = seq(0, 1000, 100)
     ) +
     scale_x_date(date_breaks = "1 months", date_labels = "%d.%m.%y") +
-    coord_cartesian(xlim = c(as.Date("2021-01-01"), as.Date("2021-11-05")), expand = TRUE) +
+    coord_cartesian(xlim = c(start_date, start_date), expand = TRUE) +
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK thousand") +

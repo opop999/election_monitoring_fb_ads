@@ -87,7 +87,7 @@ plot_total_ads <- ggplotly(summary_dataset %>%
   xlab("Total Ads") +
   ylab(element_blank()) +
   labs(fill = "Proportion unique ads") +
-  ggtitle(paste("Ads since", format(start_date, "%d.%m.%Y"), "of pages with more than 10 ads")))
+  ggtitle(paste("Total Ads (pages with more than 10 ads) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_ads
 
@@ -127,7 +127,7 @@ plot_total_spending <- ggplotly(summary_dataset %>%
   xlab("Total Spend (CZK thousands)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad (CZK thousands)") +
-  ggtitle("Spending on ads since 1.1.2021"))
+  ggtitle(paste("Spending on Ads since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_spending
 
@@ -144,7 +144,7 @@ Column
 ### Ad Runtime 
 
 ```{r}
-plot_total_spending <- ggplotly(summary_dataset %>%
+plot_total_runtime <- ggplotly(summary_dataset %>%
   filter(total_ads > 10) %>%
   ggplot(aes(x = avg_ad_runtime, y = reorder(page_name, avg_ad_runtime))) +
   geom_col(fill = "#026663") +
@@ -155,14 +155,13 @@ plot_total_spending <- ggplotly(summary_dataset %>%
   theme_minimal() +
   xlab("Days") +
   ylab(element_blank()) +
-  ggtitle("Average Ad runtime since 1.1.2021"))
+  ggtitle(paste("Average Ad runtime since", format(start_date, "%d.%m.%Y"))))
 
-plot_total_spending
+plot_total_runtime
 
-saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+saveWidget(plot_total_runtime, file = paste0(directory, "/plot_total_runtime.html"))
 
 ```
-
 
 Total Impressions
 =====================================
@@ -196,14 +195,13 @@ plot_total_impressions <- ggplotly(summary_dataset %>%
   xlab("Total Impressions (millions)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad impressions (thousands)") +
-  ggtitle("Total impression of political ads since 1.1.2021, square root scale"))
+  ggtitle(paste("Total Ads impressions (square root scale) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_impressions
 
 saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impressions.html"))
 
 ```
-
 
 Total Reach (minimal)
 =====================================
@@ -237,14 +235,13 @@ plot_total_reach <- ggplotly(summary_dataset %>%
   xlab("Total reach (millions)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad reach (thousands)") +
-  ggtitle("Total (minimal) reach of political ads since 1.1.2021, square root scale"))
+  ggtitle(paste("Total minimal reach of Ads (square root scale) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_reach
 
 saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
 
 ```
-
 
 Spending & Time
 =====================================
@@ -262,9 +259,9 @@ spend_over_time <- ggplotly(
       ad_creation_time_week = as.Date(cut(ad_creation_time, breaks = "week", start.on.monday = TRUE)) + 4,
       cumulative_spend_million = round((cumulative_spend / 1000000), digits = 3)
     ) %>%
-    group_by(page_name, ad_creation_time_week) %>% 
-    summarise(end_of_week_million_spend = max(cumulative_spend_million)) %>% 
-    ungroup() %>% 
+    group_by(page_name, ad_creation_time_week) %>%
+    summarise(end_of_week_million_spend = max(cumulative_spend_million)) %>%
+    ungroup() %>%
     ggplot(aes(x = ad_creation_time_week, y = end_of_week_million_spend, color = page_name)) +
     geom_line() +
     geom_point(size = 0.8) +
@@ -280,8 +277,9 @@ spend_over_time <- ggplotly(
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK million") +
-    ggtitle("Spending (in millions CZK) on FB Ads, January 2021-present")
+    ggtitle(paste("Spending (in CZK million) on Ads since", format(start_date, "%d.%m.%Y")))
 )
+
 
 spend_over_time
 
@@ -317,11 +315,11 @@ spend_weekly <- ggplotly(
       labels = seq(0, 1000, 100)
     ) +
     scale_x_date(date_breaks = "1 months", date_labels = "%d.%m.%y") +
-    coord_cartesian(xlim = c(start_date, start_date), expand = TRUE) +
+    coord_cartesian(xlim = c(start_date, end_date), expand = TRUE) +
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK thousand") +
-    ggtitle("Weekly spending (in thousands CZK) on FB Ads, January 2021-present")
+    ggtitle(paste("Weekly spending (in CZK thousand) on Ads since", format(start_date, "%d.%m.%Y")))
 )
 
 spend_weekly
@@ -329,10 +327,6 @@ spend_weekly
 saveWidget(spend_weekly, file = paste0(directory, "/plot_spend_weekly.html"))
 
 ```
-
-
-
-
 
 Gender
 =====================================
@@ -361,7 +355,7 @@ plot_gender <- ggplotly(
     theme(legend.position = "none") +
     xlab("Proportion Ads Targeting Male Audience") +
     ylab(element_blank()) +
-    ggtitle("Proportion of Ads since 1.1.2021 targeting male users")
+    ggtitle(paste("Proportion of Ads targeting male audience since", format(start_date, "%d.%m.%Y")))
 )
 
 plot_gender
@@ -405,7 +399,7 @@ plot_age <- ggplotly(
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
-    ggtitle("Proportion of Ads since 1.1.2021 targeting specific age groups")
+    ggtitle(paste("Proportion of Ads targeting specific age group since", format(start_date, "%d.%m.%Y")))
 )
 
 plot_age
@@ -413,8 +407,6 @@ plot_age
 saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
 
 ```
-
-
 
 Region
 =====================================
@@ -459,7 +451,7 @@ plot_region <- ggplotly(
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
-    ggtitle("Proportion of Ads since 1.1.2021 targeting specific region")
+    ggtitle(paste("Proportion of Ads targeting specific region since", format(start_date, "%d.%m.%Y")))
 )
 
 plot_region
@@ -467,11 +459,6 @@ plot_region
 saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
 
 ```
-
-
-
-
-
 
 ```{r cleanup, include=FALSE}
 # Because the saveWidget function does not correctly delete the dependency files

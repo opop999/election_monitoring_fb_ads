@@ -10,7 +10,9 @@ output:
     vertical_layout: fill
     source_code: https://github.com/opop999/election_monitoring_fb_ads
     navbar:
-      - {title: "About", icon: "ion-information-circled", href: "https://www.transparentnivolby.cz/snemovna2021"}
+      - {title: "About Project", icon: "ion-information-circled", href: "https://www.transparentnivolby.cz/snemovna2021"}
+      - {title: "About Author", icon: "ion-social-linkedin", href: "https://www.linkedin.com/in/ondrej-pekacek"}
+      - {title: "Data: FB", icon: "ion-cloud", href: "https://www.facebook.com/ads/library/"}
 ---
 
 ```{r setup, include=FALSE}
@@ -32,9 +34,8 @@ invisible(lapply(packages, library, character.only = TRUE))
 summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
 time_dataset <- readRDS(file = "data/summary_tables/time_summary.rds")
 
-# Specify output directory, which we also set as an environmental variable
+# Specify output directory for individual plots
 directory <- "data/html_plots"
-Sys.setenv(DIRECTORY = directory)
 
 # Check whether output directory exists to save individual plots
 if (!dir.exists(directory)) {
@@ -463,11 +464,18 @@ saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
 ```{r cleanup, include=FALSE}
 # Because the saveWidget function does not correctly delete the dependency files
 # which are used to create individual self-sustaining widgets, we have to delete
-# them using bash command, with environmental variable DIRECTORY same as directory
-# set at the very beginning. All non-html files in output folder are deleted.
+# them using R functions. All non-html files in output folder are deleted.
 
-system("find $DIRECTORY ! -name '*.html' -type f -delete")
-system("find $DIRECTORY -type d -empty -delete")
+unlink(grep(
+  x = list.files(
+    path = directory,
+    recursive = TRUE,
+    full.names = TRUE
+  ),
+  pattern = "(.html)$",
+  invert = TRUE,
+  value = TRUE
+))
 
 ```
 

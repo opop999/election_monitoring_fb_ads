@@ -21,6 +21,7 @@ jobs:
     - name: Compile monitored pages list
       run: Rscript 00_save_pages_list.R
     - name: Extract FB Ads
+    # This action needs a FB API token as an environment variable (we are using GitHub Secrets)
       env:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
       run: Rscript 01_ads_extract_10_plus.R

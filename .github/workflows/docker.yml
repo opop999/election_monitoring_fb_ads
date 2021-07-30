@@ -28,7 +28,7 @@ jobs:
     - name: Create summary tables
       run: Rscript --vanilla 02_create_summary_tables.R
     - name: Install Flexdashboard package
-      run: Rscript -e "install.packages('flexdashboard')"
+      run: Rscript --vanilla -e "install.packages('flexdashboard', repos = 'http://cran.rstudio.com', dependencies = TRUE)"
     - name: Update Dashboard for GitHub Pages
       run: Rscript --vanilla -e "rmarkdown::render('index.Rmd')"
 

@@ -3,15 +3,23 @@
 
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
+# Package names
+packages <- c("dplyr", "readr", "tidyr", "remotes")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages], repos = 'http://cran.rstudio.com', dependencies = TRUE)
+}
+
+# Packages loading
+invisible(lapply(packages, library, character.only = TRUE))
+
 # We have to install the Radlibrary package, which is available only on GitHub
 # To install Radlibrary, we need to use install_github function from a lightweight
 # remotes package. We also specify argument "upgrade" to never, so we do not get
 # a dialog window asking us whether to update when the script runs automatically.
-library(dplyr)
-library(readr)
-library(tidyr)
-library(remotes)
-remotes::install_github("facebookresearch/Radlibrary", upgrade = "never")
+remotes::install_github("facebookresearch/Radlibrary", upgrade = "never", dependencies = TRUE)
 library(Radlibrary)
 
 # Disable scientific notation of numbers

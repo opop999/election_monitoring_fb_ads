@@ -5,7 +5,7 @@
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
 # Package names
-packages <- c("dplyr", "readr", "tidyr", "remotes")
+packages <- c("dplyr", "tidyr", "remotes", "data.table", "arrow")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -139,16 +139,13 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   # Rds enables faster reading when using the dataset in R for further analyses
   # We turn off compression for rds files (optional). Their size is larger, but
   # the advantage are a magnitude faster read/write times using R.
-  myfile_ad_csv <- paste0(directory, "/ad_data.csv")
-  myfile_demo_csv <- paste0(directory, "/demographic_data.csv")
-  myfile_region_csv <- paste0(directory, "/region_data.csv")
-  myfile_merged_csv <- paste0(directory, "/merged_data.csv")
-  myfile_merged_rds <- paste0(directory, "/merged_data.rds")
-  write_excel_csv(x = dataset_ad, file = myfile_ad_csv)
-  write_excel_csv(x = dataset_demographic_wide, file = myfile_demo_csv)
-  write_excel_csv(x = dataset_region_wide, file = myfile_region_csv)
-  write_excel_csv(x = merged_dataset, file = myfile_merged_csv)
-  saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE)
+
+  fwrite(x = dataset_ad, file = paste0(directory, "/ad_data.csv"))
+  fwrite(x = dataset_demographic_wide, file = paste0(directory, "/demographic_data.csv"))
+  fwrite(x = dataset_region_wide, file = paste0(directory, "/region_data.csv"))
+  fwrite(x = merged_dataset, file = paste0(directory, "/merged_data.csv"))
+  saveRDS(object = merged_dataset, file = paste0(directory, "/merged_data.rds"), compress = FALSE)
+  write_feather(x = merged_dataset, sink = paste0(dir_name, "/merged_data.feather"))
 }
 
 ############################### FUNCTION END ###################################

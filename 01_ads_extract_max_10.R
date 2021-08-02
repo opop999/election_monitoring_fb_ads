@@ -4,7 +4,7 @@
 # PART 1: LOAD THE REQUIRED LIBRARIES FOR THIS SCRIPT
 
 # Package names
-packages <- c("dplyr", "readr", "tidyr", "remotes")
+packages <- c("dplyr", "data.table", "arrow", "tidyr", "remotes")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -80,7 +80,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
     myfile_csv <- paste0(directory, "/", fields_vector[i], ".csv")
     mydataset <- get(paste0("dataset_", table_type_vector[i]))
 
-    write_excel_csv(x = mydataset, file = myfile_csv)
+    fwrite(x = mydataset, file = myfile_csv)
   }
 
   # C. MERGE PART OF THE FUNCTION
@@ -121,10 +121,11 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
 
   # Finally, we save the merged dataset as well, both in the csv and rds formats
   # Rds will enable faster reading when using the dataset for further analyses
-  myfile_merged_csv <- paste0(directory, "/merged_data.csv")
-  myfile_merged_rds <- paste0(directory, "/merged_data.rds")
-  saveRDS(object = merged_dataset, file = myfile_merged_rds, compress = FALSE)
-  write_excel_csv(x = merged_dataset, file = myfile_merged_csv)
+
+  saveRDS(object = merged_dataset, file = paste0(directory, "/merged_data.rds"), compress = FALSE)
+  fwrite(x = merged_dataset, file = paste0(directory, "/merged_data.csv"))
+  write_feather(x = merged_dataset, sink = paste0(dir_name, "/merged_data.feather"))
+
 }
 
 # PART 3: SPECIFY THE ARGUMENTS NEEDED TO RUN THE FUNCTION

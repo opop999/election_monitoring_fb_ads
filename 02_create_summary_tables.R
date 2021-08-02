@@ -1,7 +1,7 @@
 ## 1. Load the required R libraries
 
 # Package names
-packages <- c("dplyr", "readr", "tidyr")
+packages <- c("dplyr", "data.table", "tidyr")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -50,7 +50,7 @@ ad_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv file
-write_csv(ad_summary, "data/summary_tables/ad_summary.csv")
+fwrite(ad_summary, "data/summary_tables/ad_summary.csv")
 
 # Creating a summary table focused on the demographic aspects
 # Percentage figures rounded to 3 decimal places
@@ -105,7 +105,7 @@ demographic_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv file
-write_csv(demographic_summary, "data/summary_tables/demographic_summary.csv")
+fwrite(demographic_summary, "data/summary_tables/demographic_summary.csv")
 
 
 # Creating a summary table focused on the regional aspects
@@ -153,7 +153,7 @@ region_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv
-write_csv(region_summary, "data/summary_tables/region_summary.csv")
+fwrite(region_summary, "data/summary_tables/region_summary.csv")
 
 # Creating a summary table with cumulative spending per page throughout time
 time_summary <- full_ads_table %>%
@@ -167,7 +167,7 @@ time_summary <- full_ads_table %>%
   mutate(cumulative_spend = cumsum(avg_spend)) %>%
   ungroup()
 
-write_csv(time_summary, "data/summary_tables/time_summary.csv")
+fwrite(time_summary, "data/summary_tables/time_summary.csv")
 saveRDS(object = time_summary, file = "data/summary_tables/time_summary.rds", compress = FALSE)
 
 
@@ -176,7 +176,7 @@ merged_summary <- ad_summary %>%
   inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>%
   inner_join(region_summary, by = c("page_name", "page_id", "total_ads"))
 
-write_csv(merged_summary, "data/summary_tables/merged_summary.csv")
+fwrite(merged_summary, "data/summary_tables/merged_summary.csv")
 saveRDS(object = merged_summary, file = "data/summary_tables/merged_summary.rds", compress = FALSE)
 
 

@@ -26,6 +26,8 @@
 
 -Data on ads from some of the pages cannot be downloaded using the API. This is a problem for some pages, where we could not obtain their numeric ids (such as pages without any ads in their history). Furthermore, the European Parliament page (unlike the rest) returns a region table with all of the regions in the EU as columns, exceeding the bandwidth of the API. As a workaround, we included the profiles of Czech representation of the EU Parliament and EU Commission instead.
 
+-Extraction of the raw dataset to Apache Arrow/Feather binary file format (alongside CSV and RDS) for a fast, language agnostic, import/export. 
+
 ### List of 80+ monitored political subjects (in no particular order):
 
 | **POLITICAL SUBJECT**           | **URL**                                                   | **NUMERIC ID**   | **WORKS?** |

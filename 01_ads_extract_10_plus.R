@@ -145,7 +145,14 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
   fwrite(x = dataset_region_wide, file = paste0(directory, "/region_data.csv"))
   fwrite(x = merged_dataset, file = paste0(directory, "/merged_data.csv"))
   saveRDS(object = merged_dataset, file = paste0(directory, "/merged_data.rds"), compress = FALSE)
-  write_feather(x = merged_dataset, sink = paste0(dir_name, "/merged_data.feather"))
+  write_feather(x = merged_dataset, sink = paste0(directory, "/merged_data.feather"))
+
+  # Saving a "lean" version of the dataset, which contains only id and text
+  # We will use this in a different repository (social media scrape through Hlidac Statu)
+  merged_dataset_lean <- merged_dataset %>%
+   select(page_name, page_id, ad_creative_body)
+
+ saveRDS(object = merged_dataset_lean, file = paste0(directory, "/merged_data_lean.rds"), compress = TRUE)
 }
 
 ############################### FUNCTION END ###################################

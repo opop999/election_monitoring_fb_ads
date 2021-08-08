@@ -21,7 +21,7 @@ jobs:
     - name: Compile monitored pages list
       run: Rscript 00_save_pages_list.R
     - name: Extract FB Ads
-    # This action needs a FB API token as an environment variable (we are using GitHub Secrets)
+    # This action needs a FB API token as an environment variable (we are using GitHub Secrets). We also need to get GH personal access token, because we are installing Radlibrary from GH repository
       env:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
           GITHUB_PAT: ${{ secrets.GITHUB_PAT }}

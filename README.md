@@ -10,7 +10,7 @@
 
 -Extraction of the raw tables with FB ads, regional and demographic data. To this end, we use the FB Ads API access through a Radlibrary wrapper. In the automatization part, we use GitHub Actions which run using a [Docker container](https://hub.docker.com/u/rocker) to provide better compatibility and robustness.
 
--Transformation of the data to merge the three separate raw tables on the Ad ID.
+-Transformation of the data to merge the three separate raw tables on the Ad-ID.
 
 -Summary tables for each of the political FB pages.
 
@@ -20,15 +20,15 @@
 
 ### Current status (26 July 2021):
 
--We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below ). Furthermore, we have a script that creates summary tables from the whole dataset and another script, which compiles the analytical dashboard with visualizations available at the GitHub Pages of this repository. Individual HTML plots are to be found in the data/html_plots folder.
+-We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below ). Furthermore, we have a script that creates summary tables from the whole dataset, and another script compiles the analytical dashboard with visualizations available at the GitHub Pages of this repository. Individual HTML plots are to be found in the data/html_plots folder.
 
--These scripts are operational within the GitHub Actions workflow inside a Docker container and run automatically once daily according to a cron trigger.
+-These scripts are operational within the GitHub Actions workflow inside a Docker container and run automatically daily according to a cron trigger.
 
 -Data on ads from some of the pages cannot be downloaded using the API. This is a problem for some pages, where we could not obtain their numeric ids (such as pages without any ads in their history). Furthermore, the European Parliament page (unlike the rest) returns a region table with all of the regions in the EU as columns, exceeding the bandwidth of the API. As a workaround, we included the profiles of Czech representation of the EU Parliament and EU Commission instead.
 
--Extraction of the raw dataset to Apache Arrow/Feather binary file format (alongside CSV and RDS) for a fast, language agnostic, import/export. 
+Extract the raw dataset to Apache Arrow/Feather binary file format (alongside CSV and RDS) for a fast, language-agnostic import/export. 
 
-### List of 80+ monitored political subjects (in no particular order):
+### list of 80+ monitored political subjects (in no particular order):
 
 | **POLITICAL SUBJECT**           | **URL**                                                   | **NUMERIC ID**   | **WORKS?** |
 |:--------------------------------|:----------------------------------------------------------|:-----------------|:-----------|

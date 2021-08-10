@@ -74,7 +74,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
       )
 
       # The call is limited to last 1000 results, pagination overcomes it
-      response <- adlib_get_paginated(query, token, max_gets = 10)
+      response <- adlib_get_paginated(query, token, max_gets = 100)
 
       assign(
         paste0(

@@ -189,6 +189,6 @@ get_all_tables_merge(
   token = token,
   parties_ids = parties_ids,
   min_date = min_date,
-  max_date = today,
+  max_date = max_date,
   directory = directory
 )

@@ -15,10 +15,13 @@ invisible(lapply(packages, library, character.only = TRUE))
 # Disable scientific notation of numbers
 options(scipen = 999)
 
-full_ads_table <- readRDS("data/merged_data.rds")
+# Specify directory
+directory <- "data"
 
-if (!dir.exists("data/summary_tables")) {
-  dir.create("data/summary_tables")
+full_ads_table <- readRDS(paste0(directory, "/merged_data.rds"))
+
+if (!dir.exists(paste0(directory, "/summary_tables"))) {
+  dir.create(paste0(directory, "/summary_tables"))
 } else {
   print("Output directory already exists")
 }
@@ -50,7 +53,7 @@ ad_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv file
-fwrite(ad_summary, "data/summary_tables/ad_summary.csv")
+fwrite(ad_summary, paste0(directory, "/summary_tables/ad_summary.csv"))
 
 # Creating a summary table focused on the demographic aspects
 # Percentage figures rounded to 3 decimal places
@@ -105,7 +108,7 @@ demographic_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv file
-fwrite(demographic_summary, "data/summary_tables/demographic_summary.csv")
+fwrite(demographic_summary, paste0(directory, "/summary_tables/demographic_summary.csv"))
 
 
 # Creating a summary table focused on the regional aspects
@@ -153,7 +156,7 @@ region_summary <- full_ads_table %>%
   ungroup()
 
 # Writing the table to a csv
-fwrite(region_summary, "data/summary_tables/region_summary.csv")
+fwrite(region_summary, paste0(directory, "/summary_tables/region_summary.csv"))
 
 # Creating a summary table with cumulative spending per page throughout time
 time_summary <- full_ads_table %>%
@@ -167,8 +170,8 @@ time_summary <- full_ads_table %>%
   mutate(cumulative_spend = cumsum(avg_spend)) %>%
   ungroup()
 
-fwrite(time_summary, "data/summary_tables/time_summary.csv")
-saveRDS(object = time_summary, file = "data/summary_tables/time_summary.rds", compress = FALSE)
+fwrite(time_summary, paste0(directory, "/summary_tables/time_summary.csv"))
+saveRDS(object = time_summary, file = paste0(directory, "/summary_tables/time_summary.rds"), compress = FALSE)
 
 
 # Merge ad, demogtaphic and region table to one
@@ -176,8 +179,8 @@ merged_summary <- ad_summary %>%
   inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>%
   inner_join(region_summary, by = c("page_name", "page_id", "total_ads"))
 
-fwrite(merged_summary, "data/summary_tables/merged_summary.csv")
-saveRDS(object = merged_summary, file = "data/summary_tables/merged_summary.rds", compress = FALSE)
+fwrite(merged_summary, paste0(directory, "/summary_tables/merged_summary.csv"))
+saveRDS(object = merged_summary, file = paste0(directory, "/summary_tables/merged_summary.rds"), compress = FALSE)
 
 
 

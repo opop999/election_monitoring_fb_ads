@@ -30,7 +30,7 @@ options(scipen = 999)
 
 ############################### FUNCTION BEGGINING #############################
 
-get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
+get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directory) {
 
   # A. SPECIFICATION PART OF THE FUNCTION
   # We need to specify the arguments we want to supply the Radlibrary functions
@@ -65,7 +65,7 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
         ad_reached_countries = "CZ",
         ad_active_status = "ALL",
         ad_delivery_date_max = max_date,
-        ad_delivery_date_min = "2021-01-01",
+        ad_delivery_date_min = min_date,
         ad_type = "POLITICAL_AND_ISSUE_ADS",
         publisher_platform = c("FACEBOOK", "INSTAGRAM"),
         limit = 1000,
@@ -161,10 +161,12 @@ get_all_tables_merge <- function(token, parties_ids, max_date, directory) {
 # PART 3: SPECIFY THE ARGUMENTS NEEDED TO RUN THE FUNCTION
 
 # Current token expires on October 7 2021. It need to be prolonged before then.
-token_fb_ads <- Sys.getenv("FB_TOKEN")
+token <- Sys.getenv("FB_TOKEN")
+
+min_date <- "2021-01-01"
 
 # Get today's date in format FB wants for automation
-today <- format((Sys.Date()), "%Y-%m-%d")
+max_date <- format((Sys.Date()), "%Y-%m-%d")
 
 # In this script, we can specify potentially unlimited number of Page ids,
 # however, each item of the list is limited by 10 ids maximum in a numeric form.
@@ -175,17 +177,18 @@ today <- format((Sys.Date()), "%Y-%m-%d")
 # To make this script more legible, ids are specified in a separate script file
 # named "monitored_pages_list.R" which also saves rds file that is loaded below.
 
-parties <- readRDS("data/saved_pages_list.rds")
+parties_ids <- readRDS("data/saved_pages_list.rds")
 
 # Specify the desired output folder
-dir_name <- "data"
+directory <- "data"
 
 # PART 4: RUNNING THE FUNCTION WITH APPROPRIATE ARGUMENTS
 
 # The end result should be 4 tables saved in the data folder
 get_all_tables_merge(
-  token = token_fb_ads,
-  parties_ids = parties,
+  token = token,
+  parties_ids = parties_ids,
+  min_date = min_date,
   max_date = today,
-  directory = dir_name
+  directory = directory
 )

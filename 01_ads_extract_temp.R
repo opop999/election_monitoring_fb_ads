@@ -1,3 +1,7 @@
+# NOTE: THIS IS A TEMPORARY ALTERED VERSION OF THE ORIGINAL SCRIPT TO OVERCOME THE BUG IN THE RADLIBRARY DEPENDENCY,
+# WHICH DOES RETURN ONLY THE "AD" TABLES, BUT NOT THE "DEMOGRAPHIC/REGION" TABLES. ONCE THE BUG IS RESOLVED
+# WE WILL RETURN TO THE FULL VERSION OF THE SCRIPT
+
 # THIS VERSION OF THE SCRIPT IS CAPABLE OF EXTRACTING
 # UNLIMITED AMOUNT OF FB PAGES, WHOSE IDs WE HAVE TO
 # SPECIFY IN A "PARTIES" LIST
@@ -31,38 +35,38 @@ options(scipen = 999)
 ############################### FUNCTION BEGGINING #############################
 
 get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directory) {
-  
+
   # A. SPECIFICATION PART OF THE FUNCTION
   # We need to specify the arguments we want to supply the Radlibrary functions
   fields_vector <- c("ad_data")
-  
+
   # "region_data", "demographic_data")
-  
+
   table_type_vector <- c("ad")
-  
+
   # "region", "demographic")
-  
+
   # We initialize empty datasets to which we add rows with each loop iteration
   dataset_ad <- tibble()
   # dataset_demographic <- tibble()
   # dataset_region <- tibble()
-  
+
   # We have to create a desired directory, if one does not yet exist
   if (!dir.exists(directory)) {
     dir.create(directory)
   } else {
     print("Output directory already exists")
   }
-  
+
   # B. EXTRACTION PART OF THE FUNCTION
-  
+
   # We will be using 2 nested for loops for extraction
   # The outer for loop cycles over the list of parties
   # The inner for loop gets us the 3 distinct types of tables from the FB Ads.
-  
+
   for (p in seq_len(length(parties_ids))) {
     print(paste("outer_loop", p))
-    
+
     for (i in seq_len(length(fields_vector))) {
       print(paste("inner_loop", i))
       # Building the query
@@ -77,10 +81,10 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
         search_page_ids = parties_ids[[p]],
         fields = fields_vector[i]
       )
-      
+
       # The call is limited to last 1000 results, pagination overcomes it
       response <- adlib_get_paginated(query, token, max_gets = 100)
-      
+
       assign(
         paste0(
           "dataset_",
@@ -95,19 +99,19 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
     # With each iteration of the outer for loop, we append the dataset
     new_rows <- get(paste0("dataset_ad_", print(p)))
     dataset_ad <- bind_rows(dataset_ad, new_rows)
-    
+
     # new_rows <- get(paste0("dataset_demographic_", print(p)))
     # dataset_demographic <- bind_rows(dataset_demographic, new_rows)
-    # 
+    #
     # new_rows <- get(paste0("dataset_region_", print(p)))
     # dataset_region <- bind_rows(dataset_region, new_rows)
   }
-  
+
   # C. MERGE PART OF THE FUNCTION
   # After extraction of the three tables through the for loop, we transform
   # and merge into one. The demographic & region datasets are in the "long"
   # format and we need a transformation to a "wide" format of the ad dataset
-  
+
   # dataset_demographic_wide <- dataset_demographic %>%
   #   mutate(across(percentage, round, 3)) %>%
   #   pivot_wider(
@@ -116,7 +120,7 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
   #     names_sort = TRUE,
   #     values_from = percentage
   #   )
-  # 
+  #
   # dataset_region_wide <- dataset_region %>%
   #   mutate(across(percentage, round, 3)) %>%
   #   pivot_wider(
@@ -125,7 +129,7 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
   #     names_sort = TRUE,
   #     values_from = percentage
   #   )
-  
+
   # Performing the join on common columns across the 3 datasets
   merged_dataset <- dataset_ad %>%
     # left_join(dataset_demographic_wide, by = "adlib_id") %>%
@@ -138,25 +142,25 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
     ), factor)) %>%
     filter(ad_creation_time >= as.Date("2021-01-01")) %>%
     arrange(desc(ad_creation_time))
-  
+
   # We save each of the three tables in a memory to a dedicated csv and rds file
   # We save the merged dataset as well, both in the csv and rds formats
   # Rds enables faster reading when using the dataset in R for further analyses
   # We turn off compression for rds files (optional). Their size is larger, but
   # the advantage are a magnitude faster read/write times using R.
-  
+
   fwrite(x = dataset_ad, file = paste0(directory, "/ad_data.csv"))
   # fwrite(x = dataset_demographic_wide, file = paste0(directory, "/demographic_data.csv"))
   # fwrite(x = dataset_region_wide, file = paste0(directory, "/region_data.csv"))
   fwrite(x = merged_dataset, file = paste0(directory, "/merged_data.csv"))
   saveRDS(object = merged_dataset, file = paste0(directory, "/merged_data.rds"), compress = FALSE)
   write_feather(x = merged_dataset, sink = paste0(directory, "/merged_data.feather"))
-  
+
   # Saving a "lean" version of the dataset, which contains only id and text
   # We will use this in a different repository (social media scrape through Hlidac Statu)
   merged_dataset_lean <- merged_dataset %>%
     select(page_name, page_id, ad_creative_body)
-  
+
   saveRDS(object = merged_dataset_lean, file = paste0(directory, "/merged_data_lean.rds"), compress = TRUE)
 }
 

@@ -1,7 +1,7 @@
 ---
-title: "FB & INSTAGRAM POLITICAL ADS"
+title: "FB ADS"
 author: "Ondrej Pekacek/TI CZ"
-date: "Last updated `r format(Sys.time(),'%d. %m. %Y')`"
+date: "Updated `r format(Sys.time(),'%d. %m. %Y')`"
 output: 
   flexdashboard::flex_dashboard:
     logo: "data/logo_ti.png"
@@ -10,8 +10,8 @@ output:
     vertical_layout: fill
     source_code: https://github.com/opop999/election_monitoring_fb_ads
     navbar:
-      - {title: "About Project", icon: "ion-information-circled", href: "https://www.transparentnivolby.cz/snemovna2021"}
-      - {title: "About Author", icon: "ion-social-linkedin", href: "https://www.linkedin.com/in/ondrej-pekacek"}
+      - {title: "Project", icon: "ion-information-circled", href: "https://www.transparentnivolby.cz/snemovna2021"}
+      - {title: "Author", icon: "ion-social-linkedin", href: "https://www.linkedin.com/in/ondrej-pekacek"}
       - {title: "Data: FB", icon: "ion-cloud", href: "https://www.facebook.com/ads/library/"}
 ---
 
@@ -31,11 +31,15 @@ if (any(installed_packages == FALSE)) {
 # Packages loading
 invisible(lapply(packages, library, character.only = TRUE))
 
-summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
-time_dataset <- readRDS(file = "data/summary_tables/time_summary.rds")
+# Specify directory with datasets
+directory_datasets <- "data/temp"
+
+# Import datasets created in the previous script
+summary_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/merged_summary.rds"))
+time_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/time_summary.rds"))
 
 # Specify output directory for individual plots
-directory <- "data/html_plots"
+directory <- "data/temp/html_plots"
 
 # Check whether output directory exists to save individual plots
 if (!dir.exists(directory)) {
@@ -61,7 +65,7 @@ end_date <- as.Date("2021-11-05")
 
 ```
 
-Total Ads
+Ads
 =====================================
 
 Column
@@ -96,7 +100,7 @@ saveWidget(plot_total_ads, file = paste0(directory, "/plot_total_ads.html"))
 
 ```
 
-Total Spending
+Spending
 =====================================
 
 Column 
@@ -136,7 +140,7 @@ saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.h
 
 ```
 
-Ad Runtime
+Runtime
 =====================================
 
 Column 
@@ -164,7 +168,7 @@ saveWidget(plot_total_runtime, file = paste0(directory, "/plot_total_runtime.htm
 
 ```
 
-Total Impressions
+Impressions
 =====================================
 
 Column 
@@ -204,7 +208,7 @@ saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impress
 
 ```
 
-Total Reach (minimal)
+Reach
 =====================================
 
 Column 
@@ -244,13 +248,13 @@ saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
 
 ```
 
-Spending & Time
+Spending trend
 =====================================
 
 Column 
 -----------------------------------------------------------------------
 
-### Spending in time (10 biggest spenders)
+### Spending in Time (10 biggest spenders)
 
 ```{r}
 spend_over_time <- ggplotly(
@@ -288,7 +292,7 @@ saveWidget(spend_over_time, file = paste0(directory, "/plot_spend_over_time.html
 
 ```
 
-Spending Weekly
+Spending weekly
 =====================================
 
 Column 
@@ -335,7 +339,13 @@ Gender
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Gender
+### Ads by Gender // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
+
+```{r include=FALSE}
+# We reload the currently non-updated dataset with demographic and regional data
+summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
+
+```
 
 ```{r}
 plot_gender <- ggplotly(
@@ -361,8 +371,6 @@ plot_gender <- ggplotly(
 
 plot_gender
 
-saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
-
 ```
 
 Age
@@ -371,7 +379,7 @@ Age
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Age (10 biggest spenders)
+### Ads by Age (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
 
 ```{r}
 plot_age <- ggplotly(
@@ -405,8 +413,6 @@ plot_age <- ggplotly(
 
 plot_age
 
-saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
-
 ```
 
 Region
@@ -415,7 +421,7 @@ Region
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Region (10 biggest spenders)
+### Ads by Region (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
 
 ```{r}
 plot_region <- ggplotly(
@@ -456,8 +462,6 @@ plot_region <- ggplotly(
 )
 
 plot_region
-
-saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
 
 ```
 

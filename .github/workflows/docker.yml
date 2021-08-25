@@ -25,7 +25,7 @@ jobs:
       env:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
           GITHUB_PAT: ${{ secrets.GH_PAT }}
-      run: Rscript 01_ads_extract_10_plus.R
+      run: Rscript 01_ads_extract.R
     - name: Create summary tables
       run: Rscript 02_create_summary_tables.R
     - name: Install Flexdashboard package

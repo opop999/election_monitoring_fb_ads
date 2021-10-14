@@ -182,5 +182,3 @@ merged_summary <- ad_summary %>%
 fwrite(merged_summary, paste0(directory, "/summary_tables/merged_summary.csv"))
 saveRDS(object = merged_summary, file = paste0(directory, "/summary_tables/merged_summary.rds"), compress = FALSE)
 
-
-

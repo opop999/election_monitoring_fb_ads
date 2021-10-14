@@ -20,7 +20,13 @@ invisible(lapply(packages, library, character.only = TRUE))
 # To install Radlibrary, we need to use install_github function from a lightweight
 # remotes package. We also specify argument "upgrade" to never, so we do not get
 # a dialog window asking us whether to update when the script runs automatically.
-remotes::install_github("facebookresearch/Radlibrary", upgrade = "never", dependencies = TRUE)
+
+# The Radlibrary 0.3 version has issues serving demographic and regional FB Ads data
+# remotes::install_github("facebookresearch/Radlibrary", upgrade = "never", dependencies = TRUE)
+
+# Temporalily using forked version of the Radlibrary 0.3 with a fix
+remotes::install_github("opop999/Radlibrary", upgrade = "never", dependencies = TRUE)
+
 library(Radlibrary)
 
 # Disable scientific notation of numbers
@@ -160,7 +166,7 @@ get_all_tables_merge <- function(token, parties_ids, min_date, max_date, directo
 
 # PART 3: SPECIFY THE ARGUMENTS NEEDED TO RUN THE FUNCTION
 
-# Current token expires on October 7 2021. It need to be prolonged before then.
+# Current token expires on December 8 2021. It need to be prolonged before then.
 token <- Sys.getenv("FB_TOKEN")
 
 min_date <- "2021-01-01"

@@ -32,14 +32,14 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 
 # Specify directory with datasets
-directory_datasets <- "data"
+directory_datasets <- "data/temp"
 
 # Import datasets created in the previous script
 summary_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/merged_summary.rds"))
 time_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/time_summary.rds"))
 
 # Specify output directory for individual plots
-directory <- "data/html_plots"
+directory <- "data/temp/html_plots"
 
 # Check whether output directory exists to save individual plots
 if (!dir.exists(directory)) {
@@ -339,7 +339,13 @@ Gender
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Gender
+### Ads by Gender // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
+
+```{r include=FALSE}
+# We reload the currently non-updated dataset with demographic and regional data
+summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
+
+```
 
 ```{r}
 plot_gender <- ggplotly(
@@ -365,8 +371,6 @@ plot_gender <- ggplotly(
 
 plot_gender
 
-saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
-
 ```
 
 Age
@@ -375,7 +379,7 @@ Age
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Age (10 biggest spenders)
+### Ads by Age (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
 
 ```{r}
 plot_age <- ggplotly(
@@ -409,8 +413,6 @@ plot_age <- ggplotly(
 
 plot_age
 
-saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
-
 ```
 
 Region
@@ -419,7 +421,7 @@ Region
 Column 
 -----------------------------------------------------------------------
 
-### Ads by Region (10 biggest spenders)
+### Ads by Region (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
 
 ```{r}
 plot_region <- ggplotly(
@@ -460,8 +462,6 @@ plot_region <- ggplotly(
 )
 
 plot_region
-
-saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
 
 ```
 

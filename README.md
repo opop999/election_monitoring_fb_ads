@@ -18,7 +18,7 @@
 
 -Using these datasets for further NLP textual analyses down the pipeline.
 
-### Current status (26 July 2021):
+### Current status (14 October 2021):
 
 -We have a script that extracts and transforms the FB and Instagram Ads from specified pages (see the list below ). Furthermore, we have a script that creates summary tables from the whole dataset, and another script compiles the analytical dashboard with visualizations available at the GitHub Pages of this repository. Individual HTML plots are to be found in the data/html_plots folder.
 
@@ -27,6 +27,8 @@
 -Data on ads from some of the pages cannot be downloaded using the API. This is a problem for some pages, where we could not obtain their numeric ids (such as pages without any ads in their history). Furthermore, the European Parliament page (unlike the rest) returns a region table with all of the regions in the EU as columns, exceeding the bandwidth of the API. As a workaround, we included the profiles of Czech representation of the EU Parliament and EU Commission instead.
 
 -Extract the raw dataset to Apache Arrow/Feather binary file format (alongside CSV and RDS) for a fast, language-agnostic import/export. 
+
+-Extraction of region and demographic data should function again thanks to the workaround - replacing the Radlibrary dependency, using the fixed forked version at opop999/Radlibrary.
 
 ### list of 80+ monitored political subjects (in no particular order):
 

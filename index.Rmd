@@ -1,7 +1,7 @@
 ---
-title: "FB ADS"
+title: "Facebook ADS Dashboard"
 author: "Ondrej Pekacek/TI CZ"
-date: "Updated `r format(Sys.time(),'%d. %m. %Y')`"
+date: "Update `r format(Sys.time(),'%d. %m. %Y')`"
 output: 
   flexdashboard::flex_dashboard:
     logo: "data/logo_ti.png"
@@ -32,14 +32,14 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 
 # Specify directory with datasets
-directory_datasets <- "data/temp"
+directory_datasets <- "data"
 
 # Import datasets created in the previous script
 summary_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/merged_summary.rds"))
 time_dataset <- readRDS(file = paste0(directory_datasets, "/summary_tables/time_summary.rds"))
 
 # Specify output directory for individual plots
-directory <- "data/temp/html_plots"
+directory <- "data/html_plots"
 
 # Check whether output directory exists to save individual plots
 if (!dir.exists(directory)) {
@@ -65,13 +65,13 @@ end_date <- as.Date("2021-11-05")
 
 ```
 
-Ads
+Summaries
 =====================================
 
-Column
+Column {.tabset}
 -----------------------------------------------------------------------
 
-### Total Ads
+### **TOTAL ADS**
 
 ```{r}
 plot_total_ads <- ggplotly(summary_dataset %>%
@@ -100,13 +100,7 @@ saveWidget(plot_total_ads, file = paste0(directory, "/plot_total_ads.html"))
 
 ```
 
-Spending
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Total Spending 
+### **TOTAL SPENDING**
 
 ```{r}
 plot_total_spending <- ggplotly(summary_dataset %>%
@@ -140,13 +134,7 @@ saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.h
 
 ```
 
-Runtime
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Ad Runtime 
+### **AD RUNTIME** 
 
 ```{r}
 plot_total_runtime <- ggplotly(summary_dataset %>%
@@ -168,13 +156,7 @@ saveWidget(plot_total_runtime, file = paste0(directory, "/plot_total_runtime.htm
 
 ```
 
-Impressions
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Total Impressions (square root scale)
+### **IMPRESSIONS** 
 
 ```{r}
 plot_total_impressions <- ggplotly(summary_dataset %>%
@@ -208,13 +190,7 @@ saveWidget(plot_total_impressions, file = paste0(directory, "/plot_total_impress
 
 ```
 
-Reach
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Total Reach (minimal, square root scale)
+### **TOTAL MINIMAL REACH**
 
 ```{r}
 plot_total_reach <- ggplotly(summary_dataset %>%
@@ -248,13 +224,13 @@ saveWidget(plot_total_reach, file = paste0(directory, "/plot_total_reach.html"))
 
 ```
 
-Spending trend
+Trends
 =====================================
 
-Column 
+Column {.tabset}
 -----------------------------------------------------------------------
 
-### Spending in Time (10 biggest spenders)
+### **SPENDING OVER TIME**
 
 ```{r}
 spend_over_time <- ggplotly(
@@ -282,9 +258,9 @@ spend_over_time <- ggplotly(
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK million") +
-    ggtitle(paste("Spending (in CZK million) on Ads since", format(start_date, "%d.%m.%Y")))
+  	labs(color = "") +
+    ggtitle(paste("Spending (in CZK million) on Ads of 10 biggest spenders since", format(start_date, "%d.%m.%Y")))
 )
-
 
 spend_over_time
 
@@ -292,13 +268,7 @@ saveWidget(spend_over_time, file = paste0(directory, "/plot_spend_over_time.html
 
 ```
 
-Spending weekly
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Spending Weekly (10 biggest spenders)
+### **SPENDING WEEKLY**
 
 ```{r}
 spend_weekly <- ggplotly(
@@ -324,7 +294,8 @@ spend_weekly <- ggplotly(
     theme(legend.title = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) +
     xlab(element_blank()) +
     ylab("CZK thousand") +
-    ggtitle(paste("Weekly spending (in CZK thousand) on Ads since", format(start_date, "%d.%m.%Y")))
+  	labs(fill = "") +
+    ggtitle(paste("Weekly spending (in CZK thousand) on Ads of 10 biggest spenders since", format(start_date, "%d.%m.%Y")))
 )
 
 spend_weekly
@@ -333,19 +304,13 @@ saveWidget(spend_weekly, file = paste0(directory, "/plot_spend_weekly.html"))
 
 ```
 
-Gender
+Demographics
 =====================================
 
-Column 
+Column {.tabset}
 -----------------------------------------------------------------------
 
-### Ads by Gender // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
-
-```{r include=FALSE}
-# We reload the currently non-updated dataset with demographic and regional data
-summary_dataset <- readRDS(file = "data/summary_tables/merged_summary.rds")
-
-```
+### **GENDER**
 
 ```{r}
 plot_gender <- ggplotly(
@@ -371,15 +336,11 @@ plot_gender <- ggplotly(
 
 plot_gender
 
+saveWidget(plot_gender, file = paste0(directory, "/plot_gender.html"))
+
 ```
 
-Age
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Ads by Age (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
+### **AGE**
 
 ```{r}
 plot_age <- ggplotly(
@@ -408,20 +369,17 @@ plot_age <- ggplotly(
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
-    ggtitle(paste("Proportion of Ads targeting specific age group since", format(start_date, "%d.%m.%Y")))
+  	labs(fill = "") +
+    ggtitle(paste("Proportion of Ads of 10 biggest spenders targeting specific age group since", format(start_date, "%d.%m.%Y")))
 )
 
 plot_age
 
+saveWidget(plot_age, file = paste0(directory, "/plot_age.html"))
+
 ```
 
-Region
-=====================================
-
-Column 
------------------------------------------------------------------------
-
-### Ads by Region (10 biggest spenders) // **NOTE: DUE TO THE TECHNICAL DIFFICULTIES, DATA REGARDING DEMOGRAPHIC AND REGIONAL TARGETING OF POLITICAL ADS WERE LAST UPDATED ON 18.8.2021**
+### **REGION**
 
 ```{r}
 plot_region <- ggplotly(
@@ -458,10 +416,13 @@ plot_region <- ggplotly(
     theme(legend.title = element_blank()) +
     xlab(element_blank()) +
     ylab(element_blank()) +
-    ggtitle(paste("Proportion of Ads targeting specific region since", format(start_date, "%d.%m.%Y")))
+  	labs(fill = "") +
+    ggtitle(paste("Proportion of Ads of 10 biggest spenders targeting specific region since", format(start_date, "%d.%m.%Y")))
 )
 
 plot_region
+
+saveWidget(plot_region, file = paste0(directory, "/plot_region.html"))
 
 ```
 

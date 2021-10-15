@@ -126,11 +126,33 @@ plot_total_spending <- ggplotly(summary_dataset %>%
   xlab("Total Spend (CZK thousands)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad (CZK thousands)") +
-  ggtitle(paste("Spending on Ads since", format(start_date, "%d.%m.%Y"))))
+  ggtitle(paste("Spending on Ads (pages with more than 10 ads) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_spending
 
 saveWidget(plot_total_spending, file = paste0(directory, "/plot_total_spending.html"))
+
+```
+
+### **AD LENGTH** 
+
+```{r}
+plot_avg_length <- ggplotly(summary_dataset %>%
+  filter(total_ads > 10) %>%
+  ggplot(aes(x = avg_words, y = reorder(page_name, avg_words))) +
+  geom_col(fill = "#320266") +
+  scale_x_continuous(
+    breaks = seq(0, 1500, 100),
+    labels = seq(0, 1500, 100)
+  ) +
+  theme_minimal() +
+  xlab("Words") +
+  ylab(element_blank()) +
+  ggtitle(paste("Average Ad lenght (in words, pages with more than 10 ads) since", format(start_date, "%d.%m.%Y"))))
+
+plot_avg_length
+
+saveWidget(plot_avg_length, file = paste0(directory, "/plot_avg_length.html"))
 
 ```
 
@@ -148,7 +170,7 @@ plot_total_runtime <- ggplotly(summary_dataset %>%
   theme_minimal() +
   xlab("Days") +
   ylab(element_blank()) +
-  ggtitle(paste("Average Ad runtime since", format(start_date, "%d.%m.%Y"))))
+  ggtitle(paste("Average Ad runtime (pages with more than 10 ads) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_runtime
 
@@ -179,10 +201,10 @@ plot_total_impressions <- ggplotly(summary_dataset %>%
     labels = seq(0, 100, 10)
   ) +
   theme_minimal() +
-  xlab("Total Impressions (millions)") +
+  xlab("Total Impressions (millions, square root scale)") +
   ylab(element_blank()) +
   labs(fill = "Per Ad impressions (thousands)") +
-  ggtitle(paste("Total Ads impressions (square root scale) since", format(start_date, "%d.%m.%Y"))))
+  ggtitle(paste("Total Ads impressions (pages with more than 10 ads) since", format(start_date, "%d.%m.%Y"))))
 
 plot_total_impressions
 

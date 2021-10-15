@@ -19,12 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Check validity of FB ADS API token
-    	env:
+      env:
           FB_TOKEN: ${{ secrets.FB_TOKEN }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-    	run: Rscript 00_check_token_validity.R
+      run: Rscript 00_check_token_validity.R
     - name: Compile monitored pages list
       run: Rscript 00_save_pages_list.R
     - name: Extract FB Ads
@@ -42,7 +42,7 @@ jobs:
     - name: Print information about the session
       run: Rscript -e "sessionInfo()"
 
- # Add new files in specified folder, commit along with other modified files, push
+    # Add new files in specified folder, commit along with other modified files, push
     - name: Commit files
       run: |
         git config --local user.name actions-user

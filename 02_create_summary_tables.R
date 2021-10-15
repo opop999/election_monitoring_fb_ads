@@ -37,6 +37,7 @@ ad_summary <- full_ads_table %>%
     total_ads = n(),
     unique_ads = n_distinct(ad_creative_body),
     percent_unique = round(unique_ads / total_ads, digits = 3),
+    avg_char = round(mean(nchar(ad_creative_body), na.rm = TRUE)),
     # lower_spend = sum(spend_lower, na.rm = TRUE),
     # upper_spend = sum(spend_upper, na.rm = TRUE),
     avg_spend = round(((sum(spend_lower, na.rm = TRUE) + sum(spend_upper, na.rm = TRUE)) / 2), digits = 0),

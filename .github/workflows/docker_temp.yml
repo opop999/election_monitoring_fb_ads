@@ -18,6 +18,12 @@ jobs:
     # Load repo and run the extraction script
     steps:
     - uses: actions/checkout@v2
+    - name: Check validity of FB ADS API token
+    	env:
+          FB_TOKEN: ${{ secrets.FB_TOKEN }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
     - name: Compile monitored pages list
       run: Rscript 00_save_pages_list.R
     - name: Extract FB Ads

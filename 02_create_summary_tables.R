@@ -176,7 +176,7 @@ fwrite(time_summary, paste0(directory, "/summary_tables/time_summary.csv"))
 saveRDS(object = time_summary, file = paste0(directory, "/summary_tables/time_summary.rds"), compress = FALSE)
 
 
-# Merge ad, demogtaphic and region table to one
+# Merge ad, demographic and region table to one
 merged_summary <- ad_summary %>%
   inner_join(demographic_summary, by = c("page_name", "page_id", "total_ads")) %>%
   inner_join(region_summary, by = c("page_name", "page_id", "total_ads"))

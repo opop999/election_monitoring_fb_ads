@@ -1,5 +1,5 @@
 ---
-title: "Facebook ADS Dashboard"
+title: "Facebook ADS"
 author: "Ondrej Pekacek/TI CZ"
 date: "Update `r format(Sys.time(),'%d. %m. %Y')`"
 output: 
